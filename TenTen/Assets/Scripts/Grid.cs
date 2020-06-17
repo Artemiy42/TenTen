@@ -1,45 +1,48 @@
-﻿using JetBrains.Annotations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Grid : MonoBehaviour
+public class Grid : MonoBehaviour, ISaveable
 {
-    [SerializeField] private int height = 10;
-    [SerializeField] private int width = 10;
-    [SerializeField] private float tileSize = 1.5f;
-    [SerializeField] private GameObject slot;
+    [SerializeField] private GameObject _slot;
+    [SerializeField] private SpawnTetromino _spawnTetromino;
 
-    private Transform[,] slots;
+    private static readonly int _height = 10;
+    private static readonly int _width = 10;
 
-    private List<int> lines = new List<int>();
-    private List<int> columns = new List<int>();
+    private GameObject[,] _slots;
+    private int[,] _hasBlock;
+
+    private List<int> _lines = new List<int>();
+    private List<int> _columns = new List<int>();
 
     public event UnityAction<int> BlockAdded;
     public event UnityAction<int> ClearLines;
 
     void Start()
     {
-        slots = new Transform[height, width];
+        _slots = new GameObject[_height, _width];
+        _hasBlock = new int[_height, _width];
         CreateGrid();
     }
 
     private void CreateGrid()
     {
-        for (int i = 0; i < height; ++i)
+        for (int y = 0; y < _height; ++y)
         {
-            for (int j = 0; j < width; ++j)
+            for (int x = 0; x < _width; ++x)
             {
-                GameObject tile = Instantiate(slot, gameObject.transform.position, Quaternion.identity);
+                GameObject tile = Instantiate(_slot, gameObject.transform.position, Quaternion.identity);
                 tile.transform.parent = gameObject.transform;
 
-                float posX = j * tileSize;
-                float posY = i * tileSize;
+                float posX = x;
+                float posY = y;
 
                 tile.transform.position = new Vector2(transform.position.x + posX, transform.position.y + posY);
-                slots[i, j] = null;
+                _slots[x, y] = tile;
+                _hasBlock[x, y] = 0; 
             }
         }
     }
@@ -51,16 +54,12 @@ public class Grid : MonoBehaviour
             int roundedX = GetIndexByCoord(block.position.x);
             int roundedY = GetIndexByCoord(block.position.y);
 
-            Transform childSlot = transform.GetChild(roundedY * 10 + roundedX);
-            GameObject newBlock = Instantiate(slot, childSlot.transform.position, Quaternion.identity);
-
-            newBlock.transform.parent= childSlot;
-            newBlock.GetComponent<SpriteRenderer>().color = block.gameObject.GetComponent<SpriteRenderer>().color;
-            slots[roundedX, roundedY] = newBlock.transform;
+            _slots[roundedX, roundedY].GetComponent<SpriteRenderer>().color = block.gameObject.GetComponent<SpriteRenderer>().color;
+            _hasBlock[roundedX, roundedY] = 1;
         }
 
+        tetromino.SetActive(false);
         BlockAdded.Invoke(tetromino.transform.childCount);
-        Destroy(tetromino); 
         CheckForLinesAndColumns();
     }
 
@@ -71,12 +70,12 @@ public class Grid : MonoBehaviour
             int roundedX = GetIndexByCoord(block.position.x);
             int roundedY = GetIndexByCoord(block.position.y);
 
-            if (roundedX < 0 || roundedX >= width || roundedY < 0 || roundedY >= height)
+            if (roundedX < 0 || roundedX >= _width || roundedY < 0 || roundedY >= _height)
             {
                 return false;
             }
 
-            if (slots[roundedX, roundedY] != null)
+            if (_hasBlock[roundedX, roundedY] != 0)
             {
                 return false;
             }
@@ -89,106 +88,165 @@ public class Grid : MonoBehaviour
     {
         int index;
 
-        index = Mathf.FloorToInt(coord / tileSize);
-
+        index = Mathf.RoundToInt(coord);
+        
         return index;
     }
 
-    private bool CheckFail(GameObject tetromino)
+    public bool CanAddTetromino(GameObject tetromino)
     {
+        for (int y = 0; y < _height; y++)
+        {
+            for (int x = 0; x < _width; x++)
+            {
+                if (CanAddTetrominoByPostion(tetromino.transform, x, y))
+                {
+                    Debug.Log("Can add tetromino by pos: " + new Vector2(x, y));
+                    return true;
+                }
+            }
+        }
+
         return false;
+    }
+
+    private bool CanAddTetrominoByPostion(Transform tetromino, int x, int y)
+    {
+        foreach (Transform piece in tetromino.transform)
+        {
+            float posX = x + piece.localPosition.x;
+            float posY = y + piece.localPosition.y;
+            Debug.Log("x = " + x + " y = " + y);
+
+            int roundedX = GetIndexByCoord(posX);
+            int roundedY = GetIndexByCoord(posY);
+
+            if (roundedX < 0 || roundedX >= _width || roundedY < 0 || roundedY >= _height)
+            {
+                return false;
+            }
+
+            if (_hasBlock[roundedX, roundedY] != 0)
+            {
+                return false;
+            }
+            
+            Debug.Log("Can add x = " + x + " y = " + y + " | piece = " + piece.localPosition + " | posX = " + posX.ToString("f3") + ", posY = " + posY.ToString("f3") + " | IdX = " + roundedX + ", IdY = " + roundedY);
+        }
+
+        return true;
     }
 
     private void CheckForLinesAndColumns()
     {
-        for (int i = 0; i < height; i++)
+        for (int i = 0; i < _height; i++)
         {
             if (HasLine(i))
             {
-                lines.Add(i);
+                _lines.Add(i);
                 Debug.Log("Find line " + i);
             }
 
             if (HasColumn(i))
             {
-                columns.Add(i);
+                _columns.Add(i);
                 Debug.Log("Find column " + i);
             }
         }
 
-        foreach (int index in lines)
+        foreach (int index in _lines)
         {
             DeleteLine(index);
         }
 
-        foreach (int index in columns)
+        foreach (int index in _columns)
         {
             DeleteColumn(index);
         }
 
-        ClearLines.Invoke(lines.Count + columns.Count);
+        ClearLines.Invoke(_lines.Count + _columns.Count);
 
-        lines.Clear();
-        columns.Clear();
+        _lines.Clear();
+        _columns.Clear();
     }
 
-    private bool HasLine(int j)
+    private bool HasLine(int y)
     {
-        for (int i = 0; i < width; i++)
+        for (int x = 0; x < _width; x++)
         {
-            if (slots[i, j] == null)
+            if (_hasBlock[x, y] == 0)
             {
                 return false;
             }
         }
 
-        Debug.Log("Find line #" + j);
+        Debug.Log("Find line #" + y);
         return true;
     }
 
-    private bool HasColumn(int i)
+    private bool HasColumn(int x)
     {
-        for (int j = 0; j < height; j++)
+        for (int y = 0; y < _height; y++)
         {
-            if (slots[i, j] == null)
+            if (_hasBlock[x, y] == 0)
             {
                 return false;
             }
         }
 
-        Debug.Log("Find column #" + i);
+        Debug.Log("Find column #" + x);
         return true;
     }
 
-    private void DeleteLine(int j)
+    private void DeleteLine(int y)
     {
         StringBuilder str = new StringBuilder();
 
-        for (int i = 0; i < width; i++)
+        for (int x = 0; x < _width; x++)
         {
-            if (slots[i, j] != null)
+            if (_hasBlock[x, y] != 0)
             {
-                str.Append("(" + i + "," + j + ") ");
-                Destroy(slots[i, j].gameObject);
+                str.Append("(" + x + "," + y + ") ");
+                _slots[x, y].GetComponent<SpriteRenderer>().color = _slot.GetComponent<SpriteRenderer>().color;
+                _hasBlock[x, y] = 0;
             }
         }
 
         Debug.Log("Delete line " + str);
     }
 
-    private void DeleteColumn(int i)
+    private void DeleteColumn(int x)
     {
         StringBuilder str = new StringBuilder();
 
-        for (int j = 0; j < height; j++)
+        for (int y = 0; y < _height; y++)
         {
-            if (slots[i, j] != null)
+            if (_hasBlock[x, y] != 0)
             {
-                str.Append("(" + i + "," + j + ") ");
-                Destroy(slots[i, j].gameObject);
+                str.Append("(" + x + "," + y + ") ");
+                _slots[x, y].GetComponent<SpriteRenderer>().color = _slot.GetComponent<SpriteRenderer>().color;
+                _hasBlock[x, y] = 0;
             }
         }
 
         Debug.Log("Delete column " + str);
+    }
+
+    public void Save()
+    {
+        for (int y = 0; y < _width; y++)
+        {
+            for (int x = 0; x < _width; x++)
+            {
+                PlayerPrefs.SetString("Slot" + x.ToString() + y, _slots[x,y].GetComponent<SpriteRenderer>().color.ToString());
+                Debug.Log(_slots[x, y].GetComponent<SpriteRenderer>().color.ToString());
+                PlayerPrefs.SetInt("HasBlock" + x.ToString() + y, _hasBlock[x,y]);
+            }
+        }
+    }
+
+    public void Load()
+    {
+        Debug.Log("Load Grid");
     }
 }

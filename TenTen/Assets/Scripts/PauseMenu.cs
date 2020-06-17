@@ -8,8 +8,6 @@ public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject _pauseMenuUI;
 
-    // public event UnityAction SaveState;
-
     public void Resume()
     {
         _pauseMenuUI.SetActive(false);
@@ -17,7 +15,6 @@ public class PauseMenu : MonoBehaviour
 
     public void Pause()
     {
-    //    SaveState.Invoke();
         _pauseMenuUI.SetActive(true);
     }
 

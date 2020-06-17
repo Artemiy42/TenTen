@@ -1,27 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnTetromino : MonoBehaviour
 {
     [SerializeField] private GameObject[] _tetrominoes;
-    [SerializeField] private int[] _percent;
-    [SerializeField] private int _max;
+    [SerializeField] private GameObject[] _spawnSlots;
     [SerializeField] private PauseMenu _pauseMenu;
 
-    void Start()
+    private void Start()
     {
-        CreateTetrominoes();
-    //   _pauseMenu.SaveState += SaveTetromino;
-    }
-
-    void Update()
-    {
-        if (!hasTetrominoes())
-        {
-            CreateTetrominoes();
-        }
+        //   _pauseMenu.SaveState += SaveTetromino;
     }
 
     private void OnDisable()
@@ -29,43 +17,20 @@ public class SpawnTetromino : MonoBehaviour
     //    _pauseMenu.SaveState -= SaveTetromino;
     }
 
-    private void CreateTetrominoes() 
+    public void CreateTetrominoes(List<GameObject> liveTetrominoes) 
     {
-        foreach (Transform slot in transform)
+        for (int i = 0; i < _spawnSlots.Length; i++)
         {
-            GameObject tetromino = Instantiate(GetRandomTetromino(), slot.position, Quaternion.identity);
-            tetromino.transform.Rotate(Vector3.forward, Random.Range(0, 4) * 90);
-            tetromino.transform.parent = slot;
+            GameObject tetromino = Instantiate(GetRandomTetromino(), _spawnSlots[i].transform.position, Quaternion.identity);
+            tetromino.transform.parent = _spawnSlots[i].transform;
+            liveTetrominoes.Add(tetromino);
         }
     }
 
     // Add more random
     private GameObject GetRandomTetromino()
     {
-        /*int percent = Random.Range(0, _max);
-        
-        for (int i = 0; i < _tetrominoes.Length; i++)
-        {
-            if (percent <= _percent[i])
-            {
-                return _tetrominoes[i];
-            }
-        }*/
-
         return _tetrominoes[Random.Range(0, _tetrominoes.Length)];
-    }
-
-    private bool hasTetrominoes()
-    {
-        foreach (Transform slot in transform)
-        {
-            if (slot.childCount != 0)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void SaveTetromino()

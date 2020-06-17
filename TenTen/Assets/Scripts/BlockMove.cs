@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 
 public class BlockMove : MonoBehaviour
 {
@@ -50,6 +49,7 @@ public class BlockMove : MonoBehaviour
             Vector3 mousePos;
             mousePos = Input.mousePosition;
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+            GetComponent<SortingGroup>().sortingLayerName = "Air";
 
             startPosX = mousePos.x - this.transform.position.x;
             startPosY = mousePos.y - this.transform.position.y;
@@ -71,6 +71,7 @@ public class BlockMove : MonoBehaviour
             else
             {
                 this.transform.position = resetPosition;
+                GetComponent<SortingGroup>().sortingLayerName = "Piece";
                 ReduceScale();
                 moving = false;
             }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ScoreDisplayer : MonoBehaviour
+public class ScoreDisplayer : MonoBehaviour, ISaveable
 {
     [SerializeField] private Grid _grid;
     [SerializeField] private TMP_Text _textScore;
@@ -14,15 +14,14 @@ public class ScoreDisplayer : MonoBehaviour
     {
         _grid.BlockAdded += OnBlockAdded;    
         _grid.ClearLines += OnClearLines;
-    //    _pauseMenu.SaveState += SaveScore;
-    //    _textScore.text = LoadScore().ToString();
+        Load();
     }
 
     private void OnDisable()
     {
         _grid.BlockAdded -= OnBlockAdded;    
         _grid.ClearLines -= OnClearLines;
-    //   _pauseMenu.SaveState -= SaveScore;
+        Save();
     }
 
     private void OnBlockAdded(int scoreCount)
@@ -40,19 +39,25 @@ public class ScoreDisplayer : MonoBehaviour
         _textScore.text = _score.ToString();
     }
 
-    private int LoadScore()
+    public void Save()
+    {
+        PlayerPrefs.SetInt("Score", _score);
+        Debug.Log("Save Score " + _score);
+    }
+
+    public void Load()
     {
         if (PlayerPrefs.HasKey("Score"))
         {
-            _score = PlayerPrefs.GetInt("Score");
-            return _score;
+            _score = PlayerPrefs.GetInt("Score", _score);
+        }
+        else
+        {
+            _score = 0;
         }
 
-        return 0;
-    }
+        _textScore.text = _score.ToString();
 
-    private void SaveScore()
-    {
-    //    PlayerPrefs.SetInt("Score", _score);
+        Debug.Log("Load Score " + _score);
     }
 }
