@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameOverMenu : MonoBehaviour
@@ -10,10 +8,12 @@ public class GameOverMenu : MonoBehaviour
     public void GameOver()
     {
         _gameOverMenuUI.SetActive(true);
+        SaveLoad.Instance().DeleteSave();
+        SaveLoad.Instance().Clear();
     }
 
     public void Restart()
-    {
+    {   
         SceneManager.LoadScene("Game");
     }
 

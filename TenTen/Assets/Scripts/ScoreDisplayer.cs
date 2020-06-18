@@ -1,33 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ScoreDisplayer : MonoBehaviour, ISaveable
 {
     [SerializeField] private Grid _grid;
     [SerializeField] private TMP_Text _textScore;
-    [SerializeField] private PauseMenu _pauseMenu;
     private int _score;
+
+    public event UnityAction<int> ScoreChange;
 
     private void OnEnable()
     {
         _grid.BlockAdded += OnBlockAdded;    
         _grid.ClearLines += OnClearLines;
-        Load();
+        SaveLoad.Instance().AddToList(this);
     }
 
     private void OnDisable()
     {
         _grid.BlockAdded -= OnBlockAdded;    
         _grid.ClearLines -= OnClearLines;
-        Save();
     }
 
     private void OnBlockAdded(int scoreCount)
     {
         _score += scoreCount;
         _textScore.text = _score.ToString();
+        ScoreChange.Invoke(_score);
     }
 
     private void OnClearLines(int linesCount)
@@ -37,6 +37,7 @@ public class ScoreDisplayer : MonoBehaviour, ISaveable
         
         _score += sum;
         _textScore.text = _score.ToString();
+        ScoreChange.Invoke(_score);
     }
 
     public void Save()

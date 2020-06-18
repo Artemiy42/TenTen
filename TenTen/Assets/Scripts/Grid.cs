@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class Grid : MonoBehaviour, ISaveable
 {
     [SerializeField] private GameObject _slot;
-    [SerializeField] private SpawnTetromino _spawnTetromino;
+    [SerializeField] private Spawner _spawnTetromino;
 
     private static readonly int _height = 10;
     private static readonly int _width = 10;
@@ -21,11 +21,17 @@ public class Grid : MonoBehaviour, ISaveable
     public event UnityAction<int> BlockAdded;
     public event UnityAction<int> ClearLines;
 
-    void Start()
+    private void Start()
     {
         _slots = new GameObject[_height, _width];
         _hasBlock = new int[_height, _width];
         CreateGrid();
+        SaveLoad.Instance().Load();
+    }
+
+    private void OnEnable()
+    {
+        SaveLoad.Instance().AddToList(this);
     }
 
     private void CreateGrid()
@@ -59,8 +65,8 @@ public class Grid : MonoBehaviour, ISaveable
         }
 
         tetromino.SetActive(false);
-        BlockAdded.Invoke(tetromino.transform.childCount);
         CheckForLinesAndColumns();
+        BlockAdded.Invoke(tetromino.transform.childCount);
     }
 
     public bool CanAddToGrid(GameObject tetromino)
@@ -238,8 +244,10 @@ public class Grid : MonoBehaviour, ISaveable
         {
             for (int x = 0; x < _width; x++)
             {
-                PlayerPrefs.SetString("Slot" + x.ToString() + y, _slots[x,y].GetComponent<SpriteRenderer>().color.ToString());
-                Debug.Log(_slots[x, y].GetComponent<SpriteRenderer>().color.ToString());
+                Color color = _slots[x, y].GetComponent<SpriteRenderer>().color;
+                string strColor = color.r + ";" + color.g + ";" + color.b;
+                Debug.Log("Slot" + x + y + " " + strColor);
+                PlayerPrefs.SetString("Slot" + x.ToString() + y, strColor);
                 PlayerPrefs.SetInt("HasBlock" + x.ToString() + y, _hasBlock[x,y]);
             }
         }
@@ -247,6 +255,15 @@ public class Grid : MonoBehaviour, ISaveable
 
     public void Load()
     {
-        Debug.Log("Load Grid");
+        for (int y = 0; y < _width; y++)
+        {
+            for (int x = 0; x < _width; x++)
+            {
+                string strColor = PlayerPrefs.GetString("Slot" + x.ToString() + y);
+                Debug.Log("Slot" + x + y + " " + strColor);
+                _slots[x, y].GetComponent<SpriteRenderer>().color = ColorParse.StringRGBToColor(strColor);
+                _hasBlock[x, y] = PlayerPrefs.GetInt("HasBlock" + x.ToString() + y);
+            }
+        }
     }
 }

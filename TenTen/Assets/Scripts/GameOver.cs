@@ -1,24 +1,31 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GameOver : MonoBehaviour, ISaveable
 {
     [SerializeField] private Grid _grid;
-    [SerializeField] private SpawnTetromino _spawnTetromino;
+    [SerializeField] private Spawner _spawnTetromino;
     [SerializeField] private GameOverMenu _gameOverMenu;
 
     private List<GameObject> _liveTetrominoes;
 
-    private void Start()
+    private void Awake()
     {
         _liveTetrominoes = new List<GameObject>();
-        _spawnTetromino.CreateTetrominoes(_liveTetrominoes);
+    }
+
+    private void Start()
+    {
+        if (_liveTetrominoes.Count == 0)
+        {
+            _spawnTetromino.CreateTetrominoes(_liveTetrominoes);
+        }
     }
 
     private void OnEnable()
     {
         _grid.BlockAdded += OnBlockAdded;
+        SaveLoad.Instance().AddToList(this);
     }
 
     private void OnDisable()
@@ -69,11 +76,37 @@ public class GameOver : MonoBehaviour, ISaveable
 
     public void Save()
     {
-        Debug.Log("Save GameOver");
+        for (int i = 0; i < 3; i++)
+        {
+            string name = "";
+
+            if (i < _liveTetrominoes.Count)
+            {
+                name = _liveTetrominoes[i].name;
+            }
+
+
+            int index = name.IndexOf("(");
+            if (index > 0)
+            {
+                name = name.Substring(0, index);
+            }
+
+            PlayerPrefs.SetString("Tetromino" + i, name);
+            Debug.Log("Save Tetromino" + i + ": " + name);
+        }
     }
 
     public void Load()
     {
-        Debug.Log("Load GameOver");
+        for (int i = 0; i < 3; i++)
+        {
+            string name = PlayerPrefs.GetString("Tetromino" + i);
+            if (name != "")
+            {
+                Debug.Log("Load Tetromino" + i + ": " + name);
+                _liveTetrominoes.Add(_spawnTetromino.CreateTetrominoByName(name, i));
+            }
+        }
     }
 }

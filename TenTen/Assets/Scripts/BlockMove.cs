@@ -31,7 +31,7 @@ public class BlockMove : MonoBehaviour
             mousePos = Input.mousePosition;
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
 
-            this.gameObject.transform.position = new Vector3(mousePos.x - startPosX, mousePos.y - startPosY, this.gameObject.transform.position.z);
+            this.gameObject.transform.position = new Vector3(mousePos.x - startPosX, mousePos.y - startPosY + 2, this.gameObject.transform.position.z);
         }
     }
 
