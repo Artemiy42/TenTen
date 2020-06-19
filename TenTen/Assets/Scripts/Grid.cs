@@ -34,6 +34,11 @@ public class Grid : MonoBehaviour, ISaveable
         SaveLoad.Instance().AddToList(this);
     }
 
+    private void OnApplicationQuit()
+    {
+        SaveLoad.Instance().Save();
+    }
+
     private void CreateGrid()
     {
         for (int y = 0; y < _height; ++y)

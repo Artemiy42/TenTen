@@ -31,7 +31,7 @@ public class BlockMove : MonoBehaviour
             mousePos = Input.mousePosition;
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
 
-            this.gameObject.transform.position = new Vector3(mousePos.x - startPosX, mousePos.y - startPosY + 2, this.gameObject.transform.position.z);
+            this.gameObject.transform.position = new Vector3(mousePos.x, mousePos.y + 2, this.gameObject.transform.position.z);
         }
     }
 
@@ -45,15 +45,7 @@ public class BlockMove : MonoBehaviour
             }
 
             IncreaseScale();
-            
-            Vector3 mousePos;
-            mousePos = Input.mousePosition;
-            mousePos = Camera.main.ScreenToWorldPoint(mousePos);
             GetComponent<SortingGroup>().sortingLayerName = "Air";
-
-            startPosX = mousePos.x - this.transform.position.x;
-            startPosY = mousePos.y - this.transform.position.y;
-
             moving = true;
         }
     }
