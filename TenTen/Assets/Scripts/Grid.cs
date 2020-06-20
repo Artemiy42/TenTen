@@ -41,6 +41,8 @@ public class Grid : MonoBehaviour, ISaveable
 
     private void CreateGrid()
     {
+        Debug.Log("Create grid");
+
         for (int y = 0; y < _height; ++y)
         {
             for (int x = 0; x < _width; ++x)
@@ -53,14 +55,15 @@ public class Grid : MonoBehaviour, ISaveable
 
                 tile.transform.position = new Vector2(transform.position.x + posX, transform.position.y + posY);
                 _slots[x, y] = tile;
+                Debug.Log(_slots[x, y].ToString());
                 _hasBlock[x, y] = 0; 
             }
         }
     }
 
-    public void AddTetrominoToGrid(GameObject tetromino)
+    public void AddTetrominoToGrid(Transform tetromino)
     {
-        foreach (Transform block in tetromino.transform.GetComponentsInChildren<Transform>().Skip(1))
+        foreach (Transform block in tetromino.GetComponentsInChildren<Transform>().Skip(1))
         {
             int roundedX = GetIndexByCoord(block.position.x);
             int roundedY = GetIndexByCoord(block.position.y);
@@ -69,14 +72,13 @@ public class Grid : MonoBehaviour, ISaveable
             _hasBlock[roundedX, roundedY] = 1;
         }
 
-        tetromino.SetActive(false);
         CheckForLinesAndColumns();
         BlockAdded.Invoke(tetromino.transform.childCount);
     }
 
-    public bool CanAddToGrid(GameObject tetromino)
+    public bool CanAddToGrid(Transform tetromino)
     {
-        foreach (Transform block in tetromino.transform)
+        foreach (Transform block in tetromino.GetComponentsInChildren<Transform>().Skip(1))
         {
             int roundedX = GetIndexByCoord(block.position.x);
             int roundedY = GetIndexByCoord(block.position.y);
@@ -92,6 +94,8 @@ public class Grid : MonoBehaviour, ISaveable
             }
         }
 
+        Debug.Log("Can add tetromino");
+
         return true;
     }
 
@@ -104,13 +108,13 @@ public class Grid : MonoBehaviour, ISaveable
         return index;
     }
 
-    public bool CanAddTetromino(GameObject tetromino)
+    public bool CanAddTetromino(Transform tetromino)
     {
         for (int y = 0; y < _height; y++)
         {
             for (int x = 0; x < _width; x++)
             {
-                if (CanAddTetrominoByPostion(tetromino.transform, x, y))
+                if (CanAddTetrominoByPostion(tetromino, x, y))
                 {
                     Debug.Log("Can add tetromino by pos: " + new Vector2(x, y));
                     return true;
@@ -123,11 +127,10 @@ public class Grid : MonoBehaviour, ISaveable
 
     private bool CanAddTetrominoByPostion(Transform tetromino, int x, int y)
     {
-        foreach (Transform piece in tetromino.transform)
+        foreach (Transform piece in tetromino)
         {
             float posX = x + piece.localPosition.x;
             float posY = y + piece.localPosition.y;
-            Debug.Log("x = " + x + " y = " + y);
 
             int roundedX = GetIndexByCoord(posX);
             int roundedY = GetIndexByCoord(posY);
@@ -155,13 +158,11 @@ public class Grid : MonoBehaviour, ISaveable
             if (HasLine(i))
             {
                 _lines.Add(i);
-                Debug.Log("Find line " + i);
             }
 
             if (HasColumn(i))
             {
                 _columns.Add(i);
-                Debug.Log("Find column " + i);
             }
         }
 
@@ -245,13 +246,15 @@ public class Grid : MonoBehaviour, ISaveable
 
     public void Save()
     {
-        for (int y = 0; y < _width; y++)
+        Debug.Log("Save grid");
+
+        for (int y = 0; y < _height; y++)
         {
             for (int x = 0; x < _width; x++)
             {
                 Color color = _slots[x, y].GetComponent<SpriteRenderer>().color;
                 string strColor = color.r + ";" + color.g + ";" + color.b;
-                Debug.Log("Slot" + x + y + " " + strColor);
+                //Debug.Log("Slot" + x + y + " " + strColor);
                 PlayerPrefs.SetString("Slot" + x.ToString() + y, strColor);
                 PlayerPrefs.SetInt("HasBlock" + x.ToString() + y, _hasBlock[x,y]);
             }
@@ -260,12 +263,27 @@ public class Grid : MonoBehaviour, ISaveable
 
     public void Load()
     {
-        for (int y = 0; y < _width; y++)
+        Debug.Log("Load grid");
+
+        if (_slots == null)
+        {
+            Debug.Log("_slots null");
+            return;
+        }
+
+        for (int y = 0; y < _height; y++)
         {
             for (int x = 0; x < _width; x++)
             {
                 string strColor = PlayerPrefs.GetString("Slot" + x.ToString() + y);
-                Debug.Log("Slot" + x + y + " " + strColor);
+                //Debug.Log("Slot" + x + y + " " + strColor);
+                
+                if (_slots[x, y] == null)
+                {
+                    Debug.Log("_slots[x, y] null");
+                    return;
+                }
+
                 _slots[x, y].GetComponent<SpriteRenderer>().color = ColorParse.StringRGBToColor(strColor);
                 _hasBlock[x, y] = PlayerPrefs.GetInt("HasBlock" + x.ToString() + y);
             }

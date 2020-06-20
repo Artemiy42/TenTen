@@ -24,6 +24,7 @@ class SaveLoad
 
     public void AddToList(ISaveable saveable)
     {
+        Debug.Log("SaveLoad Add new object to list");
         _saveables.Add(saveable);
     }
 
@@ -49,11 +50,13 @@ class SaveLoad
 
     public void DeleteSave()
     {
+        Debug.Log("SaveLoad delete save");
         PlayerPrefs.DeleteKey(_saveKey);
     }
 
     public void Clear()
     {
+        Debug.Log("SaveLoad clear list");
         _saveables.Clear();
     }
 }

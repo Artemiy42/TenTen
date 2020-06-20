@@ -54,10 +54,11 @@ public class BlockMove : MonoBehaviour
     {
         if (moving && !finised)
         {
-            if (grid.CanAddToGrid(gameObject))
+            if (grid.CanAddToGrid(gameObject.transform.GetChild(0)))
             {
                 this.enabled = false;
-                grid.AddTetrominoToGrid(gameObject);
+                gameObject.SetActive(false);
+                grid.AddTetrominoToGrid(gameObject.transform.GetChild(0));
                 finised = true;
             }
             else

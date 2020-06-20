@@ -13,12 +13,16 @@ public class GameOverMenu : MonoBehaviour
     }
 
     public void Restart()
-    {   
+    {
+        SaveLoad.Instance().DeleteSave();
+        SaveLoad.Instance().Clear();
         SceneManager.LoadScene("Game");
     }
 
     public void Home()
     {
+        SaveLoad.Instance().Save();
+        SaveLoad.Instance().Clear();
         SceneManager.LoadScene(0);
     }
 }

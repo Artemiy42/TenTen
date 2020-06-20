@@ -14,11 +14,4 @@ public class PauseMenu : MonoBehaviour
     {
         _pauseMenuUI.SetActive(true);
     }
-
-    public void GoBackToMainMenu()
-    {
-        SaveLoad.Instance().Save();
-        SaveLoad.Instance().Clear();
-        SceneManager.LoadScene(0);
-    }
 }

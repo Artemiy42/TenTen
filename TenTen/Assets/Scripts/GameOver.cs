@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameOver : MonoBehaviour, ISaveable
@@ -7,16 +8,16 @@ public class GameOver : MonoBehaviour, ISaveable
     [SerializeField] private Spawner _spawnTetromino;
     [SerializeField] private GameOverMenu _gameOverMenu;
 
-    private List<GameObject> _liveTetrominoes;
+    private GameObject[] _liveTetrominoes;
 
     private void Awake()
     {
-        _liveTetrominoes = new List<GameObject>();
+        _liveTetrominoes = new GameObject[3];
     }
 
     private void Start()
     {
-        if (_liveTetrominoes.Count == 0)
+        if (!hasTetrominoes())
         {
             _spawnTetromino.CreateTetrominoes(_liveTetrominoes);
         }
@@ -35,12 +36,12 @@ public class GameOver : MonoBehaviour, ISaveable
 
     private void OnBlockAdded(int _)
     {
-        foreach (GameObject tetromino in _liveTetrominoes)
+        for (int i = 0; i < _liveTetrominoes.Length; i++)
         {
-            if (tetromino.activeSelf == false)
+            if (_liveTetrominoes[i] != null && _liveTetrominoes[i].activeSelf == false)
             {
-                Destroy(tetromino);
-                _liveTetrominoes.Remove(tetromino);
+                Destroy(_liveTetrominoes[i]);
+                _liveTetrominoes[i] = null;
                 break;
             }
         }
@@ -58,54 +59,57 @@ public class GameOver : MonoBehaviour, ISaveable
 
     public bool hasTetrominoes()
     {
-        return _liveTetrominoes.Count != 0; 
+        Debug.Log("HasTetrominoes = " + _liveTetrominoes.Where(c => c != null).Count());
+        return _liveTetrominoes.Where(c => c != null).Count() != 0; 
     }
 
     private bool CheckFail()
     {
-        foreach (GameObject tetromino in _liveTetrominoes)
+        for (int i = 0; i < _liveTetrominoes.Length; i++)
         {
-            if (_grid.CanAddTetromino(tetromino))
+            if (_liveTetrominoes[i] != null)
             {
-                return false;
+                if (_grid.CanAddTetromino(_liveTetrominoes[i].transform.GetChild(0)))
+                {
+                    return false;
+                }
             }
         }
-
+        
         return true;
     }
 
     public void Save()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < _liveTetrominoes.Length; i++)
         {
             string name = "";
 
-            if (i < _liveTetrominoes.Count)
+            if (_liveTetrominoes[i] != null)
             {
                 name = _liveTetrominoes[i].name;
+                int index = name.IndexOf("(");
+                if (index > 0)
+                {
+                    name = name.Substring(0, index);
+                }
+
+                Debug.Log("Save Tetromino" + i + ": " + name);
             }
-
-
-            int index = name.IndexOf("(");
-            if (index > 0)
-            {
-                name = name.Substring(0, index);
-            }
-
+            
             PlayerPrefs.SetString("Tetromino" + i, name);
-            Debug.Log("Save Tetromino" + i + ": " + name);
         }
     }
 
     public void Load()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < _liveTetrominoes.Length; i++)
         {
             string name = PlayerPrefs.GetString("Tetromino" + i);
             if (name != "")
             {
                 Debug.Log("Load Tetromino" + i + ": " + name);
-                _liveTetrominoes.Add(_spawnTetromino.CreateTetrominoByName(name, i));
+                _liveTetrominoes[i] = _spawnTetromino.CreateTetrominoByName(name, i);
             }
         }
     }
