@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-class SaveLoad
+class SaveLoad : MonoBehaviour
 {
     private List<ISaveable> _saveables;
     private static SaveLoad _instance;
@@ -9,7 +9,7 @@ class SaveLoad
     private string _saveKey = "Game save";
     private int _saveValue = 1;
 
-    private SaveLoad() 
+    private void Awake() 
     {
         _saveables = new List<ISaveable>();
     }
@@ -17,7 +17,9 @@ class SaveLoad
     public static SaveLoad Instance()
     {
         if (_instance == null)
+        {
             _instance = new SaveLoad();
+        }
 
         return _instance;
     }

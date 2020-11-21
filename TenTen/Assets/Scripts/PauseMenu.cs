@@ -14,4 +14,9 @@ public class PauseMenu : MonoBehaviour
     {
         _pauseMenuUI.SetActive(true);
     }
+
+    public void SwtichPause()
+    {
+        _pauseMenuUI.SetActive(!_pauseMenuUI.activeSelf);
+    }
 }

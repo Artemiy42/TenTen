@@ -7,6 +7,10 @@ public class Spawner : MonoBehaviour
     [SerializeField] private GameObject[] _tetrominoes;
     [SerializeField] private GameObject[] _spawnSlots;
 
+    private void Awake()
+    {
+    }
+
     public void CreateTetrominoes(GameObject[] liveTetrominoes)
     {
         for (int i = 0; i < liveTetrominoes.Length; i++)
@@ -15,6 +19,8 @@ public class Spawner : MonoBehaviour
             tetromino.transform.parent = _spawnSlots[i].transform;
             liveTetrominoes[i] = tetromino;
         }
+
+        //_spawnSound.Play();
     }
 
     public GameObject CreateTetrominoByName(string name, int spawnNumber)

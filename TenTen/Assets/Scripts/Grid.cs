@@ -7,7 +7,6 @@ using UnityEngine.Events;
 public class Grid : MonoBehaviour, ISaveable
 {
     [SerializeField] private GameObject _slot;
-    [SerializeField] private Spawner _spawnTetromino;
 
     private static readonly int _height = 10;
     private static readonly int _width = 10;
@@ -21,10 +20,14 @@ public class Grid : MonoBehaviour, ISaveable
     public event UnityAction<int> BlockAdded;
     public event UnityAction<int> ClearLines;
 
-    private void Start()
+    private void Awake()
     {
         _slots = new GameObject[_height, _width];
         _hasBlock = new int[_height, _width];
+    }
+
+    private void Start()
+    {
         CreateGrid();
         SaveLoad.Instance().Load();
     }
@@ -176,10 +179,14 @@ public class Grid : MonoBehaviour, ISaveable
             DeleteColumn(index);
         }
 
-        ClearLines.Invoke(_lines.Count + _columns.Count);
-
-        _lines.Clear();
-        _columns.Clear();
+        int countClears = _lines.Count + _columns.Count;
+ 
+        if (countClears > 0)
+        {
+            ClearLines.Invoke(countClears);
+            _lines.Clear();
+            _columns.Clear();
+        }
     }
 
     private bool HasLine(int y)

@@ -4,7 +4,9 @@ using UnityEngine.Rendering;
 
 public class BlockMove : MonoBehaviour
 {
-    [SerializeField] private static Grid grid;
+    [SerializeField] private static Grid _grid;
+
+    private BlockSimulation _blockSimulation;
 
     private bool moving;
     private bool finised;
@@ -16,14 +18,18 @@ public class BlockMove : MonoBehaviour
 
     private Vector3 resetPosition;
 
-    void Start()
+    private void Awake()
     {
-        grid = FindObjectOfType<Grid>();
+        _grid = FindObjectOfType<Grid>();
+    }
+
+    private void Start()
+    {
         resetPosition = this.transform.position;
         ReduceScale();
     }
 
-    void Update()
+    private void Update()
     {
         if (moving)
         {
@@ -54,11 +60,11 @@ public class BlockMove : MonoBehaviour
     {
         if (moving && !finised)
         {
-            if (grid.CanAddToGrid(gameObject.transform.GetChild(0)))
+            if (_grid.CanAddToGrid(gameObject.transform.GetChild(0)))
             {
                 this.enabled = false;
                 gameObject.SetActive(false);
-                grid.AddTetrominoToGrid(gameObject.transform.GetChild(0));
+                _grid.AddTetrominoToGrid(gameObject.transform.GetChild(0));
                 finised = true;
             }
             else
