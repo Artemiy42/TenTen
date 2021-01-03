@@ -18,7 +18,7 @@ class SaveLoad : MonoBehaviour
     {
         if (_instance == null)
         {
-            _instance = new SaveLoad();
+            _instance = FindObjectOfType<SaveLoad>();
         }
 
         return _instance;
