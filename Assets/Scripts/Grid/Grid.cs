@@ -81,5 +81,15 @@ namespace DefaultNamespace
             
             return true;
         }
+        
+        public bool IsCoordinateOnGrid((int x, int y) coord)
+        {
+            if (coord.x < 0 || coord.x >= Grid.Width || coord.x < 0 || coord.y >= Grid.Height)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

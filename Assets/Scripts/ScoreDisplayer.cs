@@ -1,35 +1,35 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace DefaultNamespace
 {
     public class ScoreDisplayer : MonoBehaviour
     {
-        public event UnityAction<int> ScoreChange;
+        public event Action<int> ScoreChange;
     
-        [SerializeField] private GridView gridView;
+        [SerializeField] private GridController _gridController;
         [SerializeField] private TMP_Text _textScore;
 
         private int _score;
 
         private void OnEnable()
         {
-            gridView.BlockAdded += OnBlockAdded;    
-            gridView.ClearLines += OnClearLines;
+            _gridController.BlockAdded += OnBlockAdded;    
+            _gridController.ClearLines += OnClearLines;
         }
 
         private void OnDisable()
         {
-            gridView.BlockAdded -= OnBlockAdded;    
-            gridView.ClearLines -= OnClearLines;
+            _gridController.BlockAdded -= OnBlockAdded;    
+            _gridController.ClearLines -= OnClearLines;
         }
 
         private void OnBlockAdded(int scoreCount)
         {
             _score += scoreCount;
             _textScore.text = _score.ToString();
-            ScoreChange.Invoke(_score);
+            ScoreChange?.Invoke(_score);
         }
 
         private void OnClearLines(int linesCount)
@@ -39,7 +39,7 @@ namespace DefaultNamespace
         
             _score += sum;
             _textScore.text = _score.ToString();
-            ScoreChange.Invoke(_score);
+            ScoreChange?.Invoke(_score);
         }
 
         public void Save()

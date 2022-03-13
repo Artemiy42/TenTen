@@ -9,18 +9,15 @@ namespace DefaultNamespace
 {
     public class Tetromino : MonoBehaviour
     {
-        public Action<Tetromino> BlockEndMove;
+        private const float LocalScaleMultiplayer = 1.7f;
+        
+        public Action<Tetromino> OnBlockEndMove;
 
         [SerializeField] private SortingGroup _sortingGroup;
         [SerializeField] private List<Transform> _blocks;
-
-        private const float LocalScaleMultiplayer = 1.7f;
-
+        
         private bool _moving;
-        private bool _finished;
         private bool _isBig = true;
-        private float _startPosX;
-        private float _startPosY;
         private Vector2 _resetPosition;
 
         public IEnumerable<Transform> Blocks => _blocks;
@@ -33,6 +30,19 @@ namespace DefaultNamespace
         public void CacheResetPosition()
         {
             _resetPosition = transform.position;
+        }
+
+        public void FinishMove()
+        {
+            enabled = false;
+        }
+
+        public void Reset()
+        {
+            transform.position = _resetPosition;
+            _sortingGroup.sortingLayerName = SortingLayerConstants.PieceLayer;
+            ReduceScale();
+            _moving = false;
         }
         
         public void ReduceScale()
@@ -58,61 +68,50 @@ namespace DefaultNamespace
             transform.localScale *= LocalScaleMultiplayer;
             _isBig = true;
         }
-        
-        private void Update()
+
+        public void SetSortingLayerForAllBlocks(string sortingLayer)
         {
+            foreach (Transform block in _blocks)
+            {
+                block.GetComponent<SpriteRenderer>().sortingLayerName = sortingLayer;
+            }
+        }
+
+        private void OnMouseDown()
+        {      
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
+            IncreaseScale();
+            _sortingGroup.sortingLayerName = SortingLayerConstants.AirLayer;
+            _moving = true;
+        }
+
+        private void OnMouseDrag()
+        {   
             if (_moving)
             {
                 Vector3 mousePosition = GetMousePosition();
-
                 transform.position = new Vector3(mousePosition.x, mousePosition.y + 2, transform.position.z);
             }
         }
 
+        private void OnMouseUp()
+        {
+            if (_moving)
+            {
+                OnBlockEndMove?.Invoke(this);
+            }
+        }
+        
         private static Vector3 GetMousePosition()
         {
             Vector3 mousePos;
             mousePos = Input.mousePosition;
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
             return mousePos;
-        }
-
-        private void OnMouseDown()
-        {      
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (EventSystem.current.IsPointerOverGameObject())
-                {
-                    return;
-                }
-
-                IncreaseScale();
-                _sortingGroup.sortingLayerName = SortingLayerConstants.AirLayer;
-                _moving = true;
-            }
-        }
-
-        private void OnMouseUp()
-        {
-            if (_moving && !_finished)
-            {
-                BlockEndMove?.Invoke(this);
-            }
-        }
-
-        public void FinishMove()
-        {
-            enabled = false;
-            gameObject.SetActive(false);
-            _finished = true;
-        }
-
-        public void Reset()
-        {
-            transform.position = _resetPosition;
-            _sortingGroup.sortingLayerName = SortingLayerConstants.PieceLayer;
-            ReduceScale();
-            _moving = false;
         }
     }
 }

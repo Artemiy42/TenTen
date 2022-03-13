@@ -6,8 +6,8 @@ namespace UI
 {
     public class MainMenu : MonoBehaviour
     {
-        public event Action PlayButtonClicked;
-        public event Action ExitButtonClicked;
+        public event Action OnPlayButtonClicked;
+        public event Action OnExitButtonClicked;
 
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _exitButton;
@@ -31,12 +31,12 @@ namespace UI
 
         private void RaisePlayEvent()
         {
-            PlayButtonClicked?.Invoke();
+            OnPlayButtonClicked?.Invoke();
         }
 
         private void RaiseExitEvent()
         {
-            ExitButtonClicked?.Invoke();
+            OnExitButtonClicked?.Invoke();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace DefaultNamespace
 
         public void Clear()
         {
+            Object.Destroy(Block);
             Block = null;
         }
     }

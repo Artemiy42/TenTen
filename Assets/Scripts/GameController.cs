@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UI;
+﻿using UI;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -7,61 +6,28 @@ namespace DefaultNamespace
     public class GameController : MonoBehaviour
     {
         [SerializeField] private MainMenu _mainMenu;
-        [SerializeField] private GridView _gridView;
-        [SerializeField] private Spawner _spawner;
+        [SerializeField] private GridController _gridController;
 
         private void Start()
         {
-            _mainMenu.PlayButtonClicked += OnPlayButtonClicked;
-            _mainMenu.ExitButtonClicked += OnExitButtonClicked;
+            _mainMenu.OnPlayButtonClicked += PlayButtonClickedHandler;
+            _mainMenu.OnExitButtonClicked += ExitButtonClickedHandler;
         }
-
-        private void StartGame()
+        
+        private void PlayButtonClickedHandler()
         {
-            _gridView.Init(new Grid());
-            _gridView.CreateGrid();
-            _gridView.gameObject.SetActive(true);
-            _spawner.CreateTetrominoes();
-            SubscribeLiveTetrominoes(_spawner.LiveTetrominoes);
-
+            _mainMenu.Hide();
+            _gridController.StartGame();
         }
 
-        private void SubscribeLiveTetrominoes(IEnumerable<Tetromino> liveTetrominoes)
+        private void ExitButtonClickedHandler()
         {
-            foreach (Tetromino tetromino in liveTetrominoes)
-            {
-                tetromino.BlockEndMove += OnBlockEndMove;
-            }
+            ExitGame();
         }
-
-        private void OnBlockEndMove(Tetromino tetromino)
-        {
-            if (_gridView.CanAddToGrid(tetromino))
-            {
-                tetromino.FinishMove();
-                _gridView.AddTetrominoToGrid(tetromino);
-                tetromino.BlockEndMove -= OnBlockEndMove;
-            }
-            else
-            {
-                tetromino.Reset();
-            }
-        }
-
+        
         private void ExitGame()
         {
             Application.Quit();
-        }
-        
-        private void OnPlayButtonClicked()
-        {
-            _mainMenu.Hide();
-            StartGame();
-        }
-
-        private void OnExitButtonClicked()
-        {
-            ExitGame();
         }
     }
 }
