@@ -43,61 +43,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85901ee10ff74c33a1d0812ab57193b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tetrominoList:
-  - Type: 0
-    Prefab: {fileID: 1860504000042656663, guid: 630e69d470a861a4ca181e7e19d41745,
-      type: 3}
-  - Type: 1
-    Prefab: {fileID: 1860504000042656663, guid: 9ca296f7a92b29949b6abf2052848c0a,
-      type: 3}
-  - Type: 2
-    Prefab: {fileID: 1860504000042656663, guid: 38bffbca1fbd57e4181f8e1a86c06ade,
-      type: 3}
-  - Type: 3
-    Prefab: {fileID: 1860504000042656663, guid: f6d872d469de5de42a9099aaec3a7961,
-      type: 3}
-  - Type: 4
-    Prefab: {fileID: 1860504000042656663, guid: 7b334963bc19c3240be0d02229baa325,
-      type: 3}
-  - Type: 5
-    Prefab: {fileID: 1860504000042656663, guid: 0f56af726108894419862f2a6c8f8753,
-      type: 3}
-  - Type: 6
-    Prefab: {fileID: 1860504000042656663, guid: 684a532792529cf4392537c5a8f5e32c,
-      type: 3}
-  - Type: 7
-    Prefab: {fileID: 1860504000042656663, guid: 41cb97fa6040cdb40b759a9d2a4f0cda,
-      type: 3}
-  - Type: 8
-    Prefab: {fileID: 1860504000042656663, guid: 0698c2d90a31a67448a0a8aebae662ac,
-      type: 3}
-  - Type: 9
-    Prefab: {fileID: 1860504000042656663, guid: 682d3bef0c6950543a247998b24a6869,
-      type: 3}
-  - Type: 10
-    Prefab: {fileID: 1860504000042656663, guid: 716ccdaf93b156140a7dd6a3777ff282,
-      type: 3}
-  - Type: 11
-    Prefab: {fileID: 1860504000042656663, guid: 1d01d0e640f07de4da0661cd4f78f97e,
-      type: 3}
-  - Type: 12
-    Prefab: {fileID: 1860504000042656663, guid: d2f6b133b1ed8ab48816bdc6b82f5813,
-      type: 3}
-  - Type: 13
-    Prefab: {fileID: 1860504000042656663, guid: 3bd3daf70d2b01d48862ed8afcfee2cb,
-      type: 3}
-  - Type: 14
-    Prefab: {fileID: 1860504000042656663, guid: 8e4cea6564df3f74cbf812fb8bd2c6a8,
-      type: 3}
-  - Type: 15
-    Prefab: {fileID: 1860504000042656663, guid: 9c1dc8001f965de47bb9dd2805edc224,
-      type: 3}
-  - Type: 16
-    Prefab: {fileID: 1860504000042656663, guid: bdea0b5b16d3bc04fa74c705a7ebaf29,
-      type: 3}
-  - Type: 17
-    Prefab: {fileID: 1860504000042656663, guid: 3287dbbe1b5694e4ba94668a96bdcb75,
-      type: 3}
-  - Type: 18
-    Prefab: {fileID: 1860504000042656663, guid: 9ab1d0b65319c6f438f575fef3db134d,
-      type: 3}
+  _tetrominoes:
+    m_keys: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f000000100000001100000012000000
+    m_values:
+    - {fileID: 1860504000042656663, guid: 630e69d470a861a4ca181e7e19d41745, type: 3}
+    - {fileID: 1860504000042656663, guid: 9ca296f7a92b29949b6abf2052848c0a, type: 3}
+    - {fileID: 1860504000042656663, guid: 38bffbca1fbd57e4181f8e1a86c06ade, type: 3}
+    - {fileID: 1860504000042656663, guid: f6d872d469de5de42a9099aaec3a7961, type: 3}
+    - {fileID: 1860504000042656663, guid: 7b334963bc19c3240be0d02229baa325, type: 3}
+    - {fileID: 1860504000042656663, guid: 0f56af726108894419862f2a6c8f8753, type: 3}
+    - {fileID: 1860504000042656663, guid: 684a532792529cf4392537c5a8f5e32c, type: 3}
+    - {fileID: 1860504000042656663, guid: 41cb97fa6040cdb40b759a9d2a4f0cda, type: 3}
+    - {fileID: 1860504000042656663, guid: 0698c2d90a31a67448a0a8aebae662ac, type: 3}
+    - {fileID: 1860504000042656663, guid: 682d3bef0c6950543a247998b24a6869, type: 3}
+    - {fileID: 1860504000042656663, guid: 716ccdaf93b156140a7dd6a3777ff282, type: 3}
+    - {fileID: 1860504000042656663, guid: 1d01d0e640f07de4da0661cd4f78f97e, type: 3}
+    - {fileID: 1860504000042656663, guid: d2f6b133b1ed8ab48816bdc6b82f5813, type: 3}
+    - {fileID: 1860504000042656663, guid: 3bd3daf70d2b01d48862ed8afcfee2cb, type: 3}
+    - {fileID: 1860504000042656663, guid: 8e4cea6564df3f74cbf812fb8bd2c6a8, type: 3}
+    - {fileID: 1860504000042656663, guid: 9c1dc8001f965de47bb9dd2805edc224, type: 3}
+    - {fileID: 1860504000042656663, guid: bdea0b5b16d3bc04fa74c705a7ebaf29, type: 3}
+    - {fileID: 1860504000042656663, guid: 3287dbbe1b5694e4ba94668a96bdcb75, type: 3}
+    - {fileID: 1860504000042656663, guid: 9ab1d0b65319c6f438f575fef3db134d, type: 3}

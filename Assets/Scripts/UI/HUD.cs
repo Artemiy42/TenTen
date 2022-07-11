@@ -3,12 +3,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace TenTen.UI
 {
-    public class HUD : MonoBehaviour
+    public class HUD : Panel
     {
-        public event Action PauseButtonClicked;
-        
+        public event Action OnPauseButtonClicked;
+
         [SerializeField] private Button _pauseButton;
         [SerializeField] private TextMeshProUGUI _bestScore;
         [SerializeField] private TextMeshProUGUI _currentScore;
@@ -23,14 +23,29 @@ namespace UI
             _bestScore.text = score.ToString();
         }
 
-        private void Start()
+        public override void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public override void Hide()
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void OnEnable()
         {
             _pauseButton.onClick.AddListener(RaisePauseEvent);
         }
 
+        private void OnDisable()
+        {
+            _pauseButton.onClick.RemoveListener(RaisePauseEvent);
+        }
+
         private void RaisePauseEvent()
         {
-            PauseButtonClicked?.Invoke();
+            OnPauseButtonClicked?.Invoke();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-namespace Utilities
+namespace TenTen.Utilities
 {
     public static class ColorUtility
     {

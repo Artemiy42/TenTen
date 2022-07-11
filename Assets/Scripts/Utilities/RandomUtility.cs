@@ -1,20 +1,23 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomUtility
+namespace TenTen.Utilities
 {
-    public static T GetRandomFromList<T>(List<T> list)
+    public class RandomUtility
     {
-        return list[Random.Range(0, list.Count)];
-    }
+        public static T GetRandomFromList<T>(List<T> list)
+        {
+            return list[Random.Range(0, list.Count)];
+        }
     
-    public static T PullRandomFromList<T>(ref List<T> list)
-    {
-        int i = Random.Range(0, list.Count);
+        public static T PullRandomFromList<T>(ref List<T> list)
+        {
+            int i = Random.Range(0, list.Count);
         
-        T result = list[i];
-        list.RemoveAt(i);
+            T result = list[i];
+            list.RemoveAt(i);
         
-        return result;
+            return result;
+        }
     }
 }

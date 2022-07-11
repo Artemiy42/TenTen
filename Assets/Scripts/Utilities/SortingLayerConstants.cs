@@ -1,4 +1,4 @@
-﻿namespace Utilities
+﻿namespace TenTen.Utilities
 {
     public static class SortingLayerConstants
     {
