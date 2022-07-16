@@ -626,6 +626,7 @@ MonoBehaviour:
   _gameOverPanel: {fileID: 1565630092}
   _hud: {fileID: 395871716}
   _boardController: {fileID: 218379873}
+  _pauseMenu: {fileID: 1398311521}
   _playerData: {fileID: 11400000, guid: 84caacbe6bcc24ea7911c0ba58f4e4b2, type: 2}
 --- !u!4 &218379872
 Transform:
@@ -3153,6 +3154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit

@@ -29,9 +29,9 @@ namespace TenTen.Board
 
         public void CreateBackgroundSlots()
         {
-            for (var y = 0; y < Board.Height; y++)
+            for (var y = 0; y < BoardController.Height; y++)
             {
-                for (var x = 0; x < Board.Width; x++)
+                for (var x = 0; x < BoardController.Width; x++)
                 {
                     var tile = Instantiate(_slot, _slotsContainer);
                     tile.transform.position = transform.position + new Vector3(x, y);
@@ -54,9 +54,9 @@ namespace TenTen.Board
             if (_showDebugVisualization && _board != null)
             {
                 Gizmos.color = Color.magenta;
-                for (var y = 0; y < Board.Height; y++)
+                for (var y = 0; y < BoardController.Height; y++)
                 {
-                    for (var x = 0; x < Board.Width; x++)
+                    for (var x = 0; x < BoardController.Width; x++)
                     {
                         var cell = _board[x, y];
                         if (!cell.IsEmpty)

@@ -9,6 +9,9 @@ namespace TenTen.Board
 {
     public class BoardController : MonoBehaviour
     {
+        public const int Height = 10;
+        public const int Width = 10;
+
         public event Action OnGameOver;
         public event Action<int> OnTetrominoAdded;
         public event Action<int> OnClearLines;
@@ -17,15 +20,21 @@ namespace TenTen.Board
         [SerializeField] private Spawner _spawner;
         [SerializeField] private HUD _hud;
 
-        private readonly Board _board = new();
+        private Board _board;
 
         public void StartGame()
         {
+            _board = new Board(new Cell[Height, Width]);
             boardView.Init(_board);
             boardView.CreateBackgroundSlots();
             boardView.Show();
             _spawner.CreateTetrominoes();
             _hud.Show();
+        }
+
+        public void ResetGame()
+        {
+            _board.Clear();
         }
 
         private void OnEnable()

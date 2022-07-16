@@ -6,9 +6,9 @@ namespace TenTen.UI
 {
     public class PauseMenu : Panel
     {
-        public event Action ResumeButtonClicked;
-        public event Action RestartButtonClicked;
-        public event Action HomeButtonClicked;
+        public event Action OnResumeButtonClicked;
+        public event Action OnRestartButtonClicked;
+        public event Action OnHomeButtonClicked;
 
         [SerializeField] private Button _resumeButton;
         [SerializeField] private Button _restartButton;
@@ -40,17 +40,17 @@ namespace TenTen.UI
 
         private void RaiseResumeEvent()
         {
-            ResumeButtonClicked?.Invoke();
+            OnResumeButtonClicked?.Invoke();
         }
 
         private void RaiseRestartEvent()
         {
-            RestartButtonClicked?.Invoke();
+            OnRestartButtonClicked?.Invoke();
         }
 
         private void RaiseHomeEvent()
         {
-            HomeButtonClicked?.Invoke();
+            OnHomeButtonClicked?.Invoke();
         }
     }
 }

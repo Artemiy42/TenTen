@@ -2,7 +2,7 @@
 
 namespace TenTen.Board
 {
-    public class Cell
+    public class Cell : ICell
     {
         public GameObject Background { get; set; }
         public GameObject Block { get; set; }

@@ -10,12 +10,17 @@ namespace TenTen
         [SerializeField] private GameOverPanel _gameOverPanel;
         [SerializeField] private HUD _hud;
         [SerializeField] private BoardController _boardController;
+        [SerializeField] private PauseMenu _pauseMenu;
         [SerializeField] private PlayerData _playerData;
         
         private void OnEnable()
         {
             _mainMenuPanel.OnPlayButtonClicked += PlayButtonClickedHandler;
             _mainMenuPanel.OnExitButtonClicked += ExitButtonClickedHandler;
+            _hud.OnPauseButtonClicked += PauseButtonClickedHandler;
+            _pauseMenu.OnResumeButtonClicked += ResumeButtonClickedHandler;
+            _pauseMenu.OnHomeButtonClicked += HomeButtonClickedHandler;
+            _pauseMenu.OnRestartButtonClicked += RestartButtonClickedHandler;
             _boardController.OnTetrominoAdded += TetrominoAddedHandler;
             _boardController.OnGameOver += GameOverHandler;     
             _boardController.OnClearLines += ClearLinesHandler;
@@ -25,6 +30,10 @@ namespace TenTen
         {
             _mainMenuPanel.OnPlayButtonClicked -= PlayButtonClickedHandler;
             _mainMenuPanel.OnExitButtonClicked -= ExitButtonClickedHandler;
+            _hud.OnPauseButtonClicked -= PauseButtonClickedHandler;
+            _pauseMenu.OnResumeButtonClicked -= ResumeButtonClickedHandler;
+            _pauseMenu.OnHomeButtonClicked -= HomeButtonClickedHandler;
+            _pauseMenu.OnRestartButtonClicked -= RestartButtonClickedHandler;
             _boardController.OnTetrominoAdded -= TetrominoAddedHandler;
             _boardController.OnGameOver -= GameOverHandler;
             _boardController.OnClearLines -= ClearLinesHandler;
@@ -69,6 +78,28 @@ namespace TenTen
             {
                 _hud.SetBestScore(_playerData.BestScore);
             }
+        }
+
+        private void PauseButtonClickedHandler()
+        {
+            _pauseMenu.Show();
+        }
+
+        private void ResumeButtonClickedHandler()
+        {
+            _pauseMenu.Hide();
+        }
+
+        private void HomeButtonClickedHandler()
+        {
+            _pauseMenu.Hide();
+            _hud.Hide();
+            _mainMenuPanel.Show();
+        }
+
+        private void RestartButtonClickedHandler()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

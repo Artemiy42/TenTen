@@ -5,33 +5,35 @@ namespace TenTen.Board
 {
     public class Board
     {
-        public const int Height = 10;
-        public const int Width = 10;
-
-        private readonly Cell[,] _cells = new Cell[Height, Width];
+        private readonly ICell[,] _cells;
         
-        public Cell this[int x, int y]
+        public ICell this[int x, int y]
         {
             get => _cells[x, y];
             set => _cells[x, y] = value;
         }
 
-        public Board()
+        public Board(ICell[,] cells)
         {
-            for (var i = 0; i < Height; i++)
+            _cells = cells;
+        }
+
+        public void Clear()
+        {
+            for (var i = 0; i < _cells.GetLength(0); i++)
             {
-                for (var j = 0; j < Width; j++)
+                for (var j = 0; j < _cells.GetLength(1); j++)
                 {
-                    _cells[i, j] = new Cell();
+                    _cells[i, j].Clear();
                 }
-            }
+            } 
         }
 
         public List<int> GetFullLines()
         {
             var fullLines = new List<int>();
 
-            for (var i = 0; i < Height; i++)
+            for (var i = 0; i < _cells.GetLength(0); i++)
             {
                 if (HasLine(i))
                     fullLines.Add(i);
@@ -44,7 +46,7 @@ namespace TenTen.Board
         {
             var fullColumns = new List<int>();
 
-            for (var i = 0; i < Width; i++)
+            for (var i = 0; i < _cells.GetLength(1); i++)
             {
                 if (HasColumn(i))
                     fullColumns.Add(i);
@@ -55,12 +57,12 @@ namespace TenTen.Board
 
         public bool IsCoordinateOnGrid(Vector2Int coord)
         {
-            return coord.x >= 0 && coord.x < Width && coord.y >= 0 && coord.y < Height;
+            return coord.x >= 0 && coord.x < _cells.GetLength(1) && coord.y >= 0 && coord.y < _cells.GetLength(0);
         }
 
         private bool HasLine(int y)
         {
-            for (var x = 0; x < Width; x++)
+            for (var x = 0; x < _cells.GetLength(1); x++)
             {
                 if (_cells[x, y].IsEmpty)
                     return false;
@@ -71,7 +73,7 @@ namespace TenTen.Board
 
         private bool HasColumn(int x)
         {
-            for (var y = 0; y < Height; y++)
+            for (var y = 0; y < _cells.GetLength(0); y++)
             {
                 if (_cells[x, y].IsEmpty)
                     return false;
