@@ -1,4 +1,6 @@
 ﻿using System;
+using TenTen.Factories;
+using TenTen.Utilities;
 using UnityEngine;
 
 namespace TenTen.Board
@@ -7,12 +9,12 @@ namespace TenTen.Board
     {
         [SerializeField] private Transform _slotsContainer;
         [SerializeField] private Transform _blocksContainer;
-        [SerializeField] private GameObject _slot;
+        [SerializeField] private TetrominoFactory _tetrominoFactory;
         [SerializeField] private bool _showDebugVisualization;
 
-        private Board _board;
+        private Board<Cell> _board;
 
-        public void Init(Board board)
+        public void Init(Board<Cell> board)
         {
             _board = board;
         }
@@ -29,13 +31,26 @@ namespace TenTen.Board
 
         public void CreateBackgroundSlots()
         {
-            for (var y = 0; y < BoardController.Height; y++)
+            for (var y = 0; y < _board.Height; y++)
             {
-                for (var x = 0; x < BoardController.Width; x++)
+                for (var x = 0; x < _board.Width; x++)
                 {
-                    var tile = Instantiate(_slot, _slotsContainer);
-                    tile.transform.position = transform.position + new Vector3(x, y);
-                    _board[x, y].Background = tile;
+                    var gridPosition = new Vector3(x, y);
+                    var tile = _tetrominoFactory.GetSlot();
+                    tile.transform.parent = _slotsContainer;
+                    tile.transform.position = transform.position + gridPosition;
+                    
+                    var cell = _board[x, y];
+                    cell.Background = tile;
+                    
+                    if (!cell.IsEmpty)
+                    {
+                        var block = _tetrominoFactory.GetBlock(cell.ColorType);
+                        block.transform.parent = _blocksContainer;
+                        block.transform.position = transform.position + gridPosition;
+                        block.SetSortingLayer(SortingLayerConstants.PieceLayer);
+                        cell.Block = block;
+                    }
                 }
             }
         }
@@ -54,9 +69,9 @@ namespace TenTen.Board
             if (_showDebugVisualization && _board != null)
             {
                 Gizmos.color = Color.magenta;
-                for (var y = 0; y < BoardController.Height; y++)
+                for (var y = 0; y < _board.Height; y++)
                 {
-                    for (var x = 0; x < BoardController.Width; x++)
+                    for (var x = 0; x < _board.Width; x++)
                     {
                         var cell = _board[x, y];
                         if (!cell.IsEmpty)

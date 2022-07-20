@@ -627,7 +627,6 @@ MonoBehaviour:
   _hud: {fileID: 395871716}
   _boardController: {fileID: 218379873}
   _pauseMenu: {fileID: 1398311521}
-  _playerData: {fileID: 11400000, guid: 84caacbe6bcc24ea7911c0ba58f4e4b2, type: 2}
 --- !u!4 &218379872
 Transform:
   m_ObjectHideFlags: 0
@@ -661,7 +660,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardView: {fileID: 969135439}
   _spawner: {fileID: 543866779}
-  _hud: {fileID: 395871716}
 --- !u!1 &226519269
 GameObject:
   m_ObjectHideFlags: 0
@@ -1935,7 +1933,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slotsContainer: {fileID: 1509812728}
   _blocksContainer: {fileID: 256504089}
-  _slot: {fileID: 706229153180829787, guid: 6e3b071e160b11844aaa79cb7ec78fe8, type: 3}
+  _tetrominoFactory: {fileID: 1240466348}
   _showDebugVisualization: 1
 --- !u!1 &1027657742
 GameObject:
@@ -1948,6 +1946,7 @@ GameObject:
   - component: {fileID: 1027657745}
   - component: {fileID: 1027657744}
   - component: {fileID: 1027657743}
+  - component: {fileID: 1027657747}
   - component: {fileID: 1027657746}
   m_Layer: 0
   m_Name: Main Camera
@@ -2038,6 +2037,22 @@ MonoBehaviour:
   _defaultOrthographicSize: 11
   _minOrthographicSize: 10
   _defaultYPosition: 5.5
+--- !u!114 &1027657747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027657742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!1 &1091010474
 GameObject:
   m_ObjectHideFlags: 0
@@ -3832,6 +3847,24 @@ PrefabInstance:
       propertyPath: m_Name
       value: TetrominoFactory
       objectReference: {fileID: 0}
+    - target: {fileID: 6410491597297760867, guid: 0804d2dc8be94184fb9505c02256c870,
+        type: 3}
+      propertyPath: _themeData
+      value: 
+      objectReference: {fileID: 11400000, guid: 245009c197caa40cfbc4727ac7161245,
+        type: 2}
+    - target: {fileID: 6410491597297760867, guid: 0804d2dc8be94184fb9505c02256c870,
+        type: 3}
+      propertyPath: _slotPrefab
+      value: 
+      objectReference: {fileID: 706229153180829787, guid: 6e3b071e160b11844aaa79cb7ec78fe8,
+        type: 3}
+    - target: {fileID: 6410491597297760867, guid: 0804d2dc8be94184fb9505c02256c870,
+        type: 3}
+      propertyPath: _blockPrefab
+      value: 
+      objectReference: {fileID: 883302481074836901, guid: d8adc0b282860084c910feb557d0cdff,
+        type: 3}
     - target: {fileID: 6410491597297760868, guid: 0804d2dc8be94184fb9505c02256c870,
         type: 3}
       propertyPath: m_RootOrder

@@ -51,10 +51,20 @@ namespace TenTen
             _liveTetrominoes.Remove(tetromino);
         }
 
+        public void RemoveAll()
+        {
+            foreach (Tetromino liveTetromino in LiveTetrominoes)
+            {
+                Destroy(liveTetromino.gameObject);
+            }
+            
+            _liveTetrominoes.Clear();
+        }
+
         private Tetromino GetRandomTetromino()
         {
             var tetrominoType = RandomUtility.GetRandomFromList(_possibleTetrominoes);
-            return _tetrominoFactory.Get(tetrominoType);
+            return _tetrominoFactory.GetTetrominoByType(tetrominoType);
         }
     }
 }

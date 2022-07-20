@@ -1,4 +1,5 @@
-﻿using TenTen.Board;
+﻿using Newtonsoft.Json;
+using TenTen.Board;
 using TenTen.UI;
 using UnityEngine;
 
@@ -11,8 +12,19 @@ namespace TenTen
         [SerializeField] private HUD _hud;
         [SerializeField] private BoardController _boardController;
         [SerializeField] private PauseMenu _pauseMenu;
-        [SerializeField] private PlayerData _playerData;
         
+        private PlayerData _playerData;
+        
+        private void Start()
+        {
+            string playerJson = PlayerPrefs.GetString("PlayerData");
+            Debug.Log("Load: " + playerJson);
+            _playerData = JsonConvert.DeserializeObject<PlayerData>(playerJson) ?? new PlayerData();
+            _boardController.Init(_playerData.BoardData);
+            _mainMenuPanel.Init(_playerData);
+            _mainMenuPanel.UpdateBestScroreText();
+        }
+
         private void OnEnable()
         {
             _mainMenuPanel.OnPlayButtonClicked += PlayButtonClickedHandler;
@@ -24,6 +36,8 @@ namespace TenTen
             _boardController.OnTetrominoAdded += TetrominoAddedHandler;
             _boardController.OnGameOver += GameOverHandler;     
             _boardController.OnClearLines += ClearLinesHandler;
+            _gameOverPanel.OnHomeButtonClicked += HomeButtonClickedHandler;
+            _gameOverPanel.OnRestartButtonClicked += RestartButtonClickedHandler;
         }
 
         private void OnDisable()
@@ -37,11 +51,25 @@ namespace TenTen
             _boardController.OnTetrominoAdded -= TetrominoAddedHandler;
             _boardController.OnGameOver -= GameOverHandler;
             _boardController.OnClearLines -= ClearLinesHandler;
+            _gameOverPanel.OnHomeButtonClicked -= HomeButtonClickedHandler;
+            _gameOverPanel.OnRestartButtonClicked -= RestartButtonClickedHandler;
+        }
+
+        private void OnApplicationQuit()
+        {
+            _playerData.BoardData = _boardController.Board;
+            string playerJson = JsonConvert.SerializeObject(_playerData);
+            Debug.Log("Save: " + playerJson);
+            PlayerPrefs.SetString("PlayerData", playerJson);
+            PlayerPrefs.Save();
         }
 
         private void PlayButtonClickedHandler()
         {
             _mainMenuPanel.Hide();
+            _hud.SetCurrentScore(_playerData.CurrentScore);
+            _hud.SetBestScore(_playerData.BestScore);
+            _hud.Show();
             _boardController.StartGame();
         }
 
@@ -76,6 +104,7 @@ namespace TenTen
         {
             if (_playerData.CurrentScore > _playerData.BestScore)
             {
+                _playerData.BestScore = _playerData.CurrentScore;
                 _hud.SetBestScore(_playerData.BestScore);
             }
         }
@@ -99,7 +128,12 @@ namespace TenTen
 
         private void RestartButtonClickedHandler()
         {
-            throw new System.NotImplementedException();
+            _boardController.ResetGame();
+            _playerData.CurrentScore = 0;
+            _pauseMenu.Hide();
+            _boardController.StartGame();
+            _hud.SetCurrentScore(_playerData.CurrentScore);
+            _hud.SetBestScore(_playerData.BestScore);
         }
     }
 }

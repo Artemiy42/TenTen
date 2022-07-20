@@ -24,12 +24,22 @@ namespace TenTen.UI
         public override void Show()
         {
             gameObject.SetActive(true);
+            UpdateBestScroreText();
+        }
+
+        public void UpdateBestScroreText()
+        {
             _bestScore.SetText(_playerData.BestScore.ToString());
         }
 
         public override void Hide()
         {
             gameObject.SetActive(false);
+        }
+
+        public void SetBestScore(int bestScore)
+        {
+            _bestScore.text = bestScore.ToString();
         }
 
         private void OnEnable()

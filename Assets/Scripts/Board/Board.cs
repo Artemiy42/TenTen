@@ -1,39 +1,67 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace TenTen.Board
 {
-    public class Board
+    public class Board<TCell> where TCell : ICell, new()
     {
-        private readonly ICell[,] _cells;
-        
-        public ICell this[int x, int y]
+        public const int DefaultWidth = 10;
+        public const int DefaultHeight = 10;
+
+        [JsonProperty]
+        private TCell[,] _cells;
+
+        public TCell this[int x, int y]
         {
             get => _cells[x, y];
             set => _cells[x, y] = value;
         }
 
-        public Board(ICell[,] cells)
+        [JsonIgnore]
+        public int Width => _cells.GetLength(0);
+        [JsonIgnore]
+        public int Height => _cells.GetLength(1);
+
+        [JsonConstructor]
+        public Board(TCell[,] cells)
         {
             _cells = cells;
         }
 
+        public Board() : this(DefaultWidth, DefaultHeight)
+        {
+        }
+
+        public Board(int width, int height)
+        {
+            _cells = new TCell[width, height];
+            for (var i = 0; i < Width; i++)
+            {
+                for (var j = 0; j < Height; j++)
+                {
+                    _cells[i, j] = new TCell();
+                }
+            }
+        }
+
         public void Clear()
         {
-            for (var i = 0; i < _cells.GetLength(0); i++)
+            for (var i = 0; i < Width; i++)
             {
-                for (var j = 0; j < _cells.GetLength(1); j++)
+                for (var j = 0; j < Height; j++)
                 {
                     _cells[i, j].Clear();
                 }
-            } 
+            }
         }
 
         public List<int> GetFullLines()
         {
             var fullLines = new List<int>();
 
-            for (var i = 0; i < _cells.GetLength(0); i++)
+            for (var i = 0; i < Width; i++)
             {
                 if (HasLine(i))
                     fullLines.Add(i);
@@ -46,7 +74,7 @@ namespace TenTen.Board
         {
             var fullColumns = new List<int>();
 
-            for (var i = 0; i < _cells.GetLength(1); i++)
+            for (var i = 0; i < Height; i++)
             {
                 if (HasColumn(i))
                     fullColumns.Add(i);
@@ -57,12 +85,28 @@ namespace TenTen.Board
 
         public bool IsCoordinateOnGrid(Vector2Int coord)
         {
-            return coord.x >= 0 && coord.x < _cells.GetLength(1) && coord.y >= 0 && coord.y < _cells.GetLength(0);
+            return coord.x >= 0 && coord.x < Height && coord.y >= 0 && coord.y < Width;
+        }
+
+        public void DeleteLine(int y)
+        {
+            for (var x = 0; x < Width; x++)
+            {
+                ClearCellIfEmpty((x, y));
+            }
+        }
+
+        public void DeleteColumn(int x)
+        {
+            for (var y = 0; y < Height; y++)
+            {
+                ClearCellIfEmpty((x, y));
+            }
         }
 
         private bool HasLine(int y)
         {
-            for (var x = 0; x < _cells.GetLength(1); x++)
+            for (var x = 0; x < Height; x++)
             {
                 if (_cells[x, y].IsEmpty)
                     return false;
@@ -73,13 +117,21 @@ namespace TenTen.Board
 
         private bool HasColumn(int x)
         {
-            for (var y = 0; y < _cells.GetLength(0); y++)
+            for (var y = 0; y < Width; y++)
             {
                 if (_cells[x, y].IsEmpty)
                     return false;
             }
 
             return true;
+        }
+
+        private void ClearCellIfEmpty((int x, int y) position)
+        {
+            var cell = _cells[position.x, position.y];
+
+            if (cell.IsEmpty == false)
+                cell.Clear();
         }
     }
 }

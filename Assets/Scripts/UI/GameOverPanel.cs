@@ -6,8 +6,8 @@ namespace TenTen.UI
 {
     public class GameOverPanel : Panel
     {
-        public event Action RestartButtonClicked;
-        public event Action HomeButtonClicked;
+        public event Action OnRestartButtonClicked;
+        public event Action OnHomeButtonClicked;
 
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _homeButton;
@@ -36,12 +36,12 @@ namespace TenTen.UI
 
         private void RaiseRestartEvent()
         {
-            RestartButtonClicked?.Invoke();
+            OnRestartButtonClicked?.Invoke();
         }
 
         private void RaiseHomeEvent()
         {
-            HomeButtonClicked?.Invoke();
+            OnHomeButtonClicked?.Invoke();
         }
     }
 }

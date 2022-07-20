@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using TenTen.UI;
 using TenTen.Utilities;
 using UnityEngine;
 
@@ -18,23 +17,41 @@ namespace TenTen.Board
 
         [SerializeField] private BoardView boardView;
         [SerializeField] private Spawner _spawner;
-        [SerializeField] private HUD _hud;
 
-        private Board _board;
+        private Board<Cell> _board;
+        public Board<Cell> Board => _board;
+
+        public void Init(Board<Cell> boardData)
+        {
+            _board = boardData ?? new Board<Cell>(Width, Height);
+            // var cellsData = boardData.Cells;
+            //
+            // for (int i = 0; i < cellsData.GetLength(0); i++)
+            // {
+            //     for (int j = 0; j < cellsData.GetLength(1); j++)
+            //     {
+            //         var cellData = cellsData[i, j];
+            //         if (!cellData.IsEmpty)
+            //         {
+            //             _board[i, j].TetrominoType = cellData.TetrominoType;
+            //         }
+            //     }
+            // }
+            
+            boardView.Init(_board);
+            boardView.CreateBackgroundSlots();
+        }
 
         public void StartGame()
         {
-            _board = new Board(new Cell[Height, Width]);
-            boardView.Init(_board);
-            boardView.CreateBackgroundSlots();
             boardView.Show();
             _spawner.CreateTetrominoes();
-            _hud.Show();
         }
 
         public void ResetGame()
         {
             _board.Clear();
+            _spawner.RemoveAll();
         }
 
         private void OnEnable()
@@ -71,9 +88,11 @@ namespace TenTen.Board
                 var blockTransform = block.transform;
                 var coord = boardView.GetCoordinatesOnGrid(blockTransform.position);
                 blockTransform.parent = boardView.transform;
-                block.SpriteRenderer.sortingLayerName = SortingLayerConstants.PieceLayer;
+                block.SetSortingLayer(SortingLayerConstants.PieceLayer);
                 sequence.Join(blockTransform.DOMove(new Vector3(coord.x, coord.y, blockTransform.position.z), 0.1f));
-                _board[coord.x, coord.y].Block = block.gameObject;
+
+                var cell = _board[coord.x, coord.y];
+                cell.AddBlock(block, tetromino.ColorType);
             }
 
             sequence.OnComplete(() =>
@@ -90,12 +109,12 @@ namespace TenTen.Board
 
             foreach (var index in lines)
             {
-                DeleteLine(index);
+                _board.DeleteLine(index);
             }
 
             foreach (var index in columns)
             {
-                DeleteColumn(index);
+                _board.DeleteColumn(index);
             }
 
             var countClears = lines.Count + columns.Count;
@@ -124,7 +143,7 @@ namespace TenTen.Board
                 if (!CanAddAtLeastOneLiveTetrominoToBoard())
                     OnGameOver?.Invoke();
 
-                Destroy(tetromino);
+                Destroy(tetromino.gameObject);
             }
             else
             {
@@ -145,9 +164,9 @@ namespace TenTen.Board
 
         private bool HasPlaceForTetromino(Tetromino tetromino)
         {
-            for (var y = 0; y < Board.Height; y++)
+            for (var y = 0; y < Height; y++)
             {
-                for (var x = 0; x < Board.Width; x++)
+                for (var x = 0; x < Width; x++)
                 {
                     if (CanAddToGridByPosition(tetromino, new Vector2Int(x, y)))
                         return true;
@@ -173,30 +192,6 @@ namespace TenTen.Board
             }
 
             return true;
-        }
-
-        private void DeleteLine(int y)
-        {
-            for (var x = 0; x < Board.Width; x++)
-            {
-                ClearCellIfEmpty((x, y));
-            }
-        }
-
-        private void DeleteColumn(int x)
-        {
-            for (var y = 0; y < Board.Height; y++)
-            {
-                ClearCellIfEmpty((x, y));
-            }
-        }
-
-        private void ClearCellIfEmpty((int x, int y) position)
-        {
-            var cell = _board[position.x, position.y];
-
-            if (cell.IsEmpty == false)
-                cell.Clear();
         }
     }
 }

@@ -6,6 +6,14 @@ namespace TenTen.Board
     {
         [SerializeField] private SpriteRenderer _spriteRenderer;
 
-        public SpriteRenderer SpriteRenderer => _spriteRenderer;
+        public void SetSortingLayer(string sortingLayerName)
+        {
+            _spriteRenderer.sortingLayerName = sortingLayerName;
+        }
+
+        public void ChangeColor(Color color)
+        {
+            _spriteRenderer.color = color;
+        }
     }
 }

@@ -1,18 +1,40 @@
-﻿using UnityEngine;
+﻿using Newtonsoft.Json;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace TenTen.Board
 {
     public class Cell : ICell
     {
+        [JsonIgnore] 
         public GameObject Background { get; set; }
-        public GameObject Block { get; set; }
+        
+        [JsonIgnore] 
+        public Block Block { get; set; }
 
-        public bool IsEmpty => Block == null;
+        public ColorType ColorType { get; set; } = ColorType.Slot;
+        public bool IsEmpty { get; set; } = true;
 
+        public void AddBlock(Block block, ColorType colorType)
+        {
+            Block = block;
+            ColorType = colorType;
+            IsEmpty = false;
+        }
+        
         public void Clear()
         {
-            Object.Destroy(Block);
-            Block = null;
+            if (Block != null)
+            {
+                Object.Destroy(Block.gameObject);
+                Block = null;
+            }
+            IsEmpty = true;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(ColorType)}: {ColorType}, {nameof(IsEmpty)}: {IsEmpty}";
         }
     }
 }
