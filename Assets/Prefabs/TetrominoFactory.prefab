@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.386145, y: 7.870283, z: -52.700363}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -65,3 +66,8 @@ MonoBehaviour:
     - {fileID: 1860504000042656663, guid: bdea0b5b16d3bc04fa74c705a7ebaf29, type: 3}
     - {fileID: 1860504000042656663, guid: 3287dbbe1b5694e4ba94668a96bdcb75, type: 3}
     - {fileID: 1860504000042656663, guid: 9ab1d0b65319c6f438f575fef3db134d, type: 3}
+  _slotPrefab: {fileID: 706229153180829787, guid: 6e3b071e160b11844aaa79cb7ec78fe8,
+    type: 3}
+  _blockPrefab: {fileID: 883302481074836901, guid: d8adc0b282860084c910feb557d0cdff,
+    type: 3}
+  _themeData: {fileID: 11400000, guid: 245009c197caa40cfbc4727ac7161245, type: 2}

@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using CodeBase.Board;
+using CodeBase.Board.Cells;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using TenTen.Board;
 
 public class JsonConverterTest
 {
@@ -10,16 +11,14 @@ public class JsonConverterTest
     {
         // Arrange.
         var cell = new Cell();
-        cell.ColorType = ColorType.BigL1;
-        cell.IsEmpty = false;
+        cell.TetrominoType = TetrominoType.BigL1;
 
         // Act.
         string serializeCell = JsonConvert.SerializeObject(cell);
         var deserializeCell = JsonConvert.DeserializeObject<Cell>(serializeCell);
         
         // Assert.
-        Assert.AreEqual(cell.ColorType, deserializeCell.ColorType);
-        Assert.AreEqual(cell.IsEmpty, deserializeCell.IsEmpty);
+        Assert.AreEqual(cell.TetrominoType, deserializeCell.TetrominoType);
     }
 
     [Test]
@@ -27,10 +26,9 @@ public class JsonConverterTest
     {
         // Arrange.
         var cellArray = new Cell[] {new(), new(), new()};
-        cellArray[0].ColorType = ColorType.BigL1;
-        cellArray[1].ColorType = ColorType.BigL2;
-        cellArray[2].ColorType = ColorType.BigL3;
-        cellArray[2].IsEmpty = cellArray[1].IsEmpty = cellArray[0].IsEmpty = false;
+        cellArray[0].TetrominoType = TetrominoType.BigL1;
+        cellArray[1].TetrominoType = TetrominoType.BigL2;
+        cellArray[2].TetrominoType = TetrominoType.BigL3;
         
         // Act.
         string serializeCells = JsonConvert.SerializeObject(cellArray);
@@ -46,8 +44,7 @@ public class JsonConverterTest
         {
             var cell = cellArray[i];
             var deserializeCell = deserializeCells[i];
-            Assert.AreEqual(cell.ColorType, deserializeCell.ColorType);
-            Assert.AreEqual(cell.IsEmpty, deserializeCell.IsEmpty);
+            Assert.AreEqual(cell.TetrominoType, deserializeCell.TetrominoType);
         }
     }
 
@@ -55,12 +52,10 @@ public class JsonConverterTest
     public void WhenSerializeICellArrayWithCellType_AndDeserializeBack_ThenArraysNeedBeEquals()
     {
         // Arrange.
-        // Arrange.
         var cellArray = new List<Cell> {new Cell(), new Cell(), new Cell()};
-        cellArray[0].ColorType = ColorType.BigL1;
-        cellArray[1].ColorType = ColorType.BigL2;
-        cellArray[2].ColorType = ColorType.BigL3;
-        cellArray[2].IsEmpty = cellArray[1].IsEmpty = cellArray[0].IsEmpty = false;
+        cellArray[0].TetrominoType = TetrominoType.BigL1;
+        cellArray[1].TetrominoType = TetrominoType.BigL2;
+        cellArray[2].TetrominoType = TetrominoType.BigL3;
         
         // Act.
         string serializeCells = JsonConvert.SerializeObject(cellArray);
@@ -76,8 +71,7 @@ public class JsonConverterTest
         {
             var cell = cellArray[i];
             var deserializeCell = deserializeCells[i];
-            Assert.AreEqual(cell.ColorType, deserializeCell.ColorType);
-            Assert.AreEqual(cell.IsEmpty, deserializeCell.IsEmpty);
+            Assert.AreEqual(cell.TetrominoType, deserializeCell.TetrominoType);
         }
     }
     
@@ -86,10 +80,9 @@ public class JsonConverterTest
     {
         // Arrange.
         Board<Cell> board = new Board<Cell>(3, 1);
-        board[0, 0].ColorType = ColorType.BigL1;
-        board[1, 0].ColorType = ColorType.BigL2;
-        board[2, 0].ColorType = ColorType.BigL3;
-        board[2, 0].IsEmpty = board[1, 0].IsEmpty = board[0, 0].IsEmpty = false;
+        board[0, 0].TetrominoType = TetrominoType.BigL1;
+        board[1, 0].TetrominoType = TetrominoType.BigL2;
+        board[2, 0].TetrominoType = TetrominoType.BigL3;
         
         // Act.
         string serializeBoard = JsonConvert.SerializeObject(board);
@@ -105,8 +98,7 @@ public class JsonConverterTest
         {
             var cell = board[i, 0];
             var deserializeCell = board[i, 0];
-            Assert.AreEqual(cell.ColorType, deserializeCell.ColorType);
-            Assert.AreEqual(cell.IsEmpty, deserializeCell.IsEmpty);
+            Assert.AreEqual(cell.TetrominoType, deserializeCell.TetrominoType);
         }
     }
 }
