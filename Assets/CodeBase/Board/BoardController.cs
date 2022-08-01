@@ -46,7 +46,10 @@ namespace CodeBase.Board
                     
                     if (!cell.IsEmpty)
                     {
-                        cell.Block = _tetrominoFactory.GetBlock(tetrominoType);
+                        var block = _tetrominoFactory.GetBlock(tetrominoType);
+                        block.SetSortingLayer(SortingLayerConstants.PieceLayer);
+                        block.transform.position = new Vector3(i, j, 0);
+                        cell.Block = block;
                     }
                 }
             }
@@ -69,6 +72,7 @@ namespace CodeBase.Board
         public void StartGame()
         {
             boardView.Show();
+            _spawner.TryCreateTetrominoes();
         }
 
         public void ResetGame()

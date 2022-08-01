@@ -1,6 +1,8 @@
 using CodeBase.Infrastructure.PersistentProgress;
 using CodeBase.Main;
+using CodeBase.Utilities;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace CodeBase.Infrastructure
 {
@@ -21,11 +23,11 @@ namespace CodeBase.Infrastructure
             DontDestroyOnLoad(this);
         }
 
-        private void StartGame()
+        private void StartGame(Scene loadedScene)
         {
             _playerProgress = _saveLoadService.Load();
 
-            _gameController = FindObjectOfType<GameController>();
+            _gameController = loadedScene.FindComponentOfType<GameController>();
             _gameController.Init();
             _gameController.LoadProgress(_playerProgress);
             _gameController.StartGame();

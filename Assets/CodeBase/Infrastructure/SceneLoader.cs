@@ -14,25 +14,25 @@ namespace CodeBase.Infrastructure
             _coroutineRunner = coroutineRunner;
         }
 
-        public void Load(string name, Action onLoaded = null)
+        public void Load(string name, Action<Scene> onLoaded = null)
         {
             _coroutineRunner.StartCoroutine(LoadScene(name, onLoaded));
         }
         
-        private IEnumerator LoadScene(string nextScene, Action onLoaded = null)
+        private IEnumerator LoadScene(string nextScene, Action<Scene> onLoaded = null)
         {
             if (SceneManager.GetActiveScene().name == nextScene)
             {
-                onLoaded?.Invoke();
+                onLoaded?.Invoke(SceneManager.GetActiveScene());
                 yield break;
             }
             
             AsyncOperation waitNextScene = SceneManager.LoadSceneAsync(nextScene);
             
-            while (waitNextScene.isDone)
+            while (!waitNextScene.isDone)
                 yield return null;
-
-            onLoaded?.Invoke();
+            
+            onLoaded?.Invoke(SceneManager.GetSceneByName(nextScene));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CodeBase.Board;
 using CodeBase.Factories;
 using CodeBase.Infrastructure.PersistentProgress;
@@ -16,11 +17,12 @@ namespace CodeBase.Spawn
         [SerializeField] private Transform[] _spawnSlots;
         [SerializeField] private List<TetrominoType> _possibleTetrominoes = new();
 
-        private ITetrominoFactory _tetrominoFactory;
-        private List<Tetromino> _liveTetrominoes;
+        private readonly Tetromino[] _liveTetrominoes = new Tetromino[3];
 
-        public bool HasLiveTetrominoes => _liveTetrominoes.Count != 0;
-        public IEnumerable<Tetromino> LiveTetrominoes => _liveTetrominoes;
+        private ITetrominoFactory _tetrominoFactory;
+
+        public bool HasLiveTetrominoes => _liveTetrominoes.Count(t => t != null) != 0;
+        public IEnumerable<Tetromino> LiveTetrominoes => _liveTetrominoes.Where(t => t != null);
 
         public void Init(ITetrominoFactory tetrominoFactory)
         {
@@ -31,21 +33,33 @@ namespace CodeBase.Spawn
         {
             for (var i = 0; i < _spawnSlots.Length; i++)
             {
-                var tetromino = SpawnTetrominoInSpawnSlot(i);
-                _liveTetrominoes.Add(tetromino);
+                var tetromino = SpawnRandomTetrominoInSpawnSlot(i);
+                _liveTetrominoes[i] = tetromino;
             }
 
             OnCreateTetrominoes?.Invoke(LiveTetrominoes);
         }
 
-        private Tetromino SpawnTetrominoInSpawnSlot(int i)
+        private Tetromino SpawnRandomTetrominoInSpawnSlot(int slotIndex)
         {
             var tetromino = GetRandomTetromino();
-            tetromino.transform.position = _spawnSlots[i].position;
+            PlaceTetrominoIntoSlot(tetromino, slotIndex);
+            return tetromino;
+        }
+
+        private Tetromino SpawnTetrominoInSpawnSlot(TetrominoType tetrominoType, int slotIndex)
+        {
+            var tetromino = _tetrominoFactory.GetTetrominoByType(tetrominoType);
+            PlaceTetrominoIntoSlot(tetromino, slotIndex);
+            return tetromino;
+        }
+
+        private void PlaceTetrominoIntoSlot(Tetromino tetromino, int slotIndex)
+        {
+            tetromino.transform.position = _spawnSlots[slotIndex].position;
             tetromino.transform.parent = transform;
             tetromino.CacheResetPosition();
             tetromino.ReduceScale();
-            return tetromino;
         }
 
         public bool TryCreateTetrominoes()
@@ -61,7 +75,8 @@ namespace CodeBase.Spawn
 
         public void Remove(Tetromino tetromino)
         {
-            _liveTetrominoes.Remove(tetromino);
+            var index = Array.IndexOf(_liveTetrominoes, tetromino);
+            _liveTetrominoes[index] = null;
             Destroy(tetromino.gameObject);
         }
 
@@ -71,8 +86,6 @@ namespace CodeBase.Spawn
             {
                 Destroy(liveTetromino.gameObject);
             }
-
-            _liveTetrominoes.Clear();
         }
 
         private Tetromino GetRandomTetromino()
@@ -88,18 +101,19 @@ namespace CodeBase.Spawn
                 var tetrominoType = progress.LiveTetrominoes[i];
                 if (tetrominoType != TetrominoType.None)
                 {
-                    _liveTetrominoes[i] = SpawnTetrominoInSpawnSlot(i);
+                    _liveTetrominoes[i] = SpawnTetrominoInSpawnSlot(tetrominoType, i);
                 }
             }
+            
+            OnCreateTetrominoes?.Invoke(LiveTetrominoes);
         }
 
         public void SaveProgress(PlayerProgress progress)
         {
             progress.LiveTetrominoes.Clear();
-            
-            for (var i = 0; i < _liveTetrominoes.Count; i++)
+            foreach (var tetromino in _liveTetrominoes)
             {
-                progress.LiveTetrominoes[i] = _liveTetrominoes[i].TetrominoType;
+                progress.LiveTetrominoes.Add(tetromino == null ? TetrominoType.None: tetromino.TetrominoType);
             }
         }
     }

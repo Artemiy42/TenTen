@@ -15,7 +15,7 @@ namespace CodeBase.Main
         
         public PlayerProgress()
         {
-            BoardData = new BoardData();
+            BoardData = new BoardData(BoardController.Height, BoardController.Width);
             LiveTetrominoes = new List<TetrominoType>();
             CurrentScore = 0;
             BestScore = 0;
@@ -24,7 +24,7 @@ namespace CodeBase.Main
         [JsonConstructor]
         public PlayerProgress(BoardData boardData, List<TetrominoType> liveTetrominoes, int currentScore, int bestScore)
         {
-            BoardData = boardData ?? new BoardData();
+            BoardData = boardData ?? new BoardData(BoardController.Height, BoardController.Width);
             LiveTetrominoes = liveTetrominoes ?? new List<TetrominoType>();
             CurrentScore = currentScore;
             BestScore = bestScore;

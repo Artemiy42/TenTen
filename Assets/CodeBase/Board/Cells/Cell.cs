@@ -9,7 +9,7 @@ namespace CodeBase.Board.Cells
         public Block Block { get; set; }
 
         public TetrominoType TetrominoType { get; set; } = TetrominoType.None;
-        public bool IsEmpty => TetrominoType != TetrominoType.None;
+        public bool IsEmpty => TetrominoType == TetrominoType.None;
 
         public void AddBlock(Block block, TetrominoType tetrominoType)
         {

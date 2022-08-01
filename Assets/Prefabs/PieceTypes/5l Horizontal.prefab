@@ -206,6 +206,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4566982079110503042, guid: f2a685663648d044c8b0d45a68d219b5,
         type: 3}
+      propertyPath: tetrominoType
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -4566982079110503042, guid: f2a685663648d044c8b0d45a68d219b5,
+        type: 3}
       propertyPath: _blocks.Array.size
       value: 5
       objectReference: {fileID: 0}
