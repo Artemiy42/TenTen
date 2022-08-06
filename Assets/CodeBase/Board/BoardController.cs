@@ -26,6 +26,8 @@ namespace CodeBase.Board
         private ITetrominoFactory _tetrominoFactory;
         private Board<Cell> _board = new(Width, Height);
 
+        public bool IsGameOver { get; private set; }
+        
         public void Init(ITetrominoFactory tetrominoFactory)
         {
             _tetrominoFactory = tetrominoFactory;
@@ -58,6 +60,13 @@ namespace CodeBase.Board
 
         public void SaveProgress(PlayerProgress progress)
         {
+            if (IsGameOver)
+            {
+                progress.BoardData.Clear();
+                progress.LiveTetrominoes.Clear();
+                return;
+            }
+            
             var cellDatas = progress.BoardData.CellDatas;
             for (int i = 0; i < cellDatas.GetLength(0); i++)
             {
@@ -73,12 +82,14 @@ namespace CodeBase.Board
         {
             boardView.Show();
             _spawner.TryCreateTetrominoes();
+            IsGameOver = false;
         }
 
         public void ResetGame()
         {
             _board.Clear();
             _spawner.RemoveAll();
+            IsGameOver = false;
         }
 
         private void OnEnable()
@@ -125,6 +136,13 @@ namespace CodeBase.Board
             sequence.OnComplete(() =>
             {
                 ClearFullLinesAndColumns();
+
+                if (!CanAddAtLeastOneLiveTetrominoToBoard())
+                {
+                    IsGameOver = true;
+                    OnGameOver?.Invoke();
+                }
+                
                 OnTetrominoAdded?.Invoke(tetromino.AmountBlock);
             });
         }
@@ -163,12 +181,10 @@ namespace CodeBase.Board
             {
                 tetromino.OnBlockEndMove -= BlockEndMoveHandler;
 
-                AddTetrominoToBoard(tetromino);
                 _spawner.Remove(tetromino);
                 _spawner.TryCreateTetrominoes();
 
-                if (!CanAddAtLeastOneLiveTetrominoToBoard())
-                    OnGameOver?.Invoke();
+                AddTetrominoToBoard(tetromino);
             }
             else
             {

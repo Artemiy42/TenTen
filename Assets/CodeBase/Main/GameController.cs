@@ -9,10 +9,10 @@ namespace CodeBase.Main
     public class GameController : MonoBehaviour, ISaverProgress
     {
         [SerializeField] private MainMenuPanel _mainMenuPanel;
+        [SerializeField] private PauseMenu _pauseMenu;
         [SerializeField] private GameOverPanel _gameOverPanel;
         [SerializeField] private HUD _hud;
         [SerializeField] private BoardController _boardController;
-        [SerializeField] private PauseMenu _pauseMenu;
         [SerializeField] private TetrominoFactory _tetrominoFactory;
 
         private PlayerProgress _playerProgress;
@@ -24,8 +24,8 @@ namespace CodeBase.Main
 
         public void StartGame()
         {
-            _boardController.StartGame();
             _mainMenuPanel.SetBestScore(_playerProgress.BestScore);
+            _mainMenuPanel.Show();
         }
         
         public void LoadProgress(PlayerProgress progress)
@@ -50,7 +50,7 @@ namespace CodeBase.Main
             _boardController.OnTetrominoAdded += TetrominoAddedHandler;
             _boardController.OnGameOver += GameOverHandler;     
             _boardController.OnClearLines += ClearLinesHandler;
-            _gameOverPanel.OnHomeButtonClicked += HomeButtonClickedHandler;
+            _gameOverPanel.OnHomeButtonClicked += GameOverHomeButtonClickedHandler;
             _gameOverPanel.OnRestartButtonClicked += RestartButtonClickedHandler;
         }
 
@@ -65,10 +65,16 @@ namespace CodeBase.Main
             _boardController.OnTetrominoAdded -= TetrominoAddedHandler;
             _boardController.OnGameOver -= GameOverHandler;
             _boardController.OnClearLines -= ClearLinesHandler;
-            _gameOverPanel.OnHomeButtonClicked -= HomeButtonClickedHandler;
+            _gameOverPanel.OnHomeButtonClicked -= GameOverHomeButtonClickedHandler;
             _gameOverPanel.OnRestartButtonClicked -= RestartButtonClickedHandler;
         }
 
+        private void ResetGame()
+        {
+            _boardController.ResetGame();
+            _playerProgress.CurrentScore = 0;
+        }
+        
         private void PlayButtonClickedHandler()
         {
             _mainMenuPanel.Hide();
@@ -130,13 +136,25 @@ namespace CodeBase.Main
             _hud.Hide();
             _mainMenuPanel.Show();
         }
+        
+        private void GameOverHomeButtonClickedHandler()
+        {
+            _hud.Hide();
+            _gameOverPanel.Hide();
+
+            ResetGame();
+            
+            _mainMenuPanel.Show();
+        }
 
         private void RestartButtonClickedHandler()
         {
-            _boardController.ResetGame();
-            _playerProgress.CurrentScore = 0;
             _pauseMenu.Hide();
+            _gameOverPanel.Hide();
+
+            ResetGame();
             _boardController.StartGame();
+
             _hud.SetCurrentScore(_playerProgress.CurrentScore);
             _hud.SetBestScore(_playerProgress.BestScore);
         }

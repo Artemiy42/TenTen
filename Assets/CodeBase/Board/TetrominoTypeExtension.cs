@@ -40,7 +40,7 @@ namespace CodeBase.Themes
                 case TetrominoType.BigL3:
                     return ColorType.BigL3;
                 case TetrominoType.BigL4:
-                    return ColorType.SmallL4;
+                    return ColorType.BigL4;
                 case TetrominoType.SmallL1:
                     return ColorType.SmallL1;
                 case TetrominoType.SmallL2:

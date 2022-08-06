@@ -76,15 +76,20 @@ namespace CodeBase.Spawn
         public void Remove(Tetromino tetromino)
         {
             var index = Array.IndexOf(_liveTetrominoes, tetromino);
-            _liveTetrominoes[index] = null;
             Destroy(tetromino.gameObject);
+            _liveTetrominoes[index] = null;
         }
 
         public void RemoveAll()
         {
-            foreach (var liveTetromino in LiveTetrominoes)
+            for (var i = 0; i < _liveTetrominoes.Length; i++)
             {
-                Destroy(liveTetromino.gameObject);
+                var tetromino = _liveTetrominoes[i];
+                if (tetromino != null)
+                {
+                    Destroy(tetromino.gameObject);
+                    _liveTetrominoes[i] = null;
+                }
             }
         }
 

@@ -1,4 +1,5 @@
 using System;
+using CodeBase.Board;
 using Newtonsoft.Json;
 
 namespace CodeBase.Main
@@ -24,6 +25,17 @@ namespace CodeBase.Main
                     CellDatas[i, j] = new CellData();
                 }
             }
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < CellDatas.GetLength(0); i++)
+            {
+                for (int j = 0; j < CellDatas.GetLength(1); j++)
+                {
+                    CellDatas[i, j].TetrominoType = TetrominoType.None;
+                }
+            }   
         }
     }
 }
