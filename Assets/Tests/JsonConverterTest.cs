@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using CodeBase.Board;
-using CodeBase.Board.Cells;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using TenTen;
 
 public class JsonConverterTest
 {
