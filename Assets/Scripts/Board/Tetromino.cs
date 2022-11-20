@@ -20,7 +20,7 @@ namespace TenTen
         [SerializeField] private Vector3 _dragOffset;
         [SerializeField] private TetrominoType _tetrominoType;
         [ShowNonSerializedField] private bool _isBigDebug;
-        
+
         private const float LocalScaleMultiplayer = 1.7f;
 
         private Vector2 _resetPosition;
@@ -36,10 +36,10 @@ namespace TenTen
             _isBig = true;
             _moving = false;
             transform.localScale = Vector3.one;
-            
+
             var i = 0;
             foreach (var activeBlock in tetromino.Blocks)
-            { 
+            {
                 _blocks[i++].Init(activeBlock);
             }
 
@@ -50,7 +50,7 @@ namespace TenTen
         {
             if (_moving)
                 return;
-            
+
             IncreaseScale();
             _sortingGroup.sortingLayerName = SortingLayerConstants.AirLayer;
             _moving = true;
@@ -60,7 +60,7 @@ namespace TenTen
         {
             if (!_moving)
                 return;
-            
+
             var mousePosition = GetMousePosition();
             transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z) + _dragOffset;
         }
@@ -69,7 +69,7 @@ namespace TenTen
         {
             if (!_moving)
                 return;
-            
+
             _moving = false;
             OnBlockEndMove?.Invoke(this);
         }
@@ -90,21 +90,21 @@ namespace TenTen
         {
             gameObject.SetActive(true);
         }
-        
+
         public void Deactivate()
         {
             foreach (var block in _blocks)
             {
                 block.Deactivate();
             }
-            
+
             gameObject.SetActive(false);
         }
 
         public void ReduceScale()
         {
             Debug.Log("Try reduce scale!");
-            
+
             if (!_isBig)
             {
                 Debug.LogError("Try reduce small block!");
@@ -146,7 +146,6 @@ namespace TenTen
         }
 
         #if UNITY_EDITOR
-
         private void OnDrawGizmos()
         {
             _isBigDebug = _isBig;
@@ -165,7 +164,6 @@ namespace TenTen
             _blocks = new List<Block>(blocks);
             EditorUtility.SetDirty(this);
         }
-
         #endif
     }
 }

@@ -131,6 +131,7 @@ namespace TenTen
         {
             _pauseMenu.Hide();
             _hud.Hide();
+            _mainMenuPanel.SetBestScore(_playerProgress.BestScore);
             _mainMenuPanel.Show();
         }
         
